@@ -1,0 +1,73 @@
+@startuml
+
+'----------------- ENTITY & ENUM --------
+enum JobStatus {
+    WAITLISTED
+    APPLIED
+    INTERVIEWING
+    OFFERED
+    REJECTED
+}
+
+class Job {
+    - Long id
+    - String title
+    - String company
+    - String url
+    - String location
+    - String requisitionNumber 
+    - String salaryRange
+    - JobStatus jobStatus
+    - String notes
+    - LocalDate postedDate
+    - LocalDateTime createdAt
+    - LocalDateTime updatedAt
+}
+
+' ------ Encapsulates all persistence operations ------
+' ------- An interface talke to db for Job entity ------
+interface  JobRepository {
+    + save(job: Job): Job
+    + findById(id: Long): Optional<Job>
+    + findAll(): List<Job>
+    + deleteById(id: Long): void
+}
+
+' ------------ Service layer --------------
+class JobService {
+    - jobRepository: JobRepository
+    
+    + listJobs(): List<Job>
+    + getJobById(id: Long): Optional<Job>
+    + createJob(job: Job): Job
+    + updateJobStatus(id: Long, newStatus: JobStatus): Optional<Job>
+    + deleteJob(id: Long): void
+}
+
+class JobParsingService {
+    + parseFromUrl(url: String): ParseJobResponseDto
+}
+
+class JobController {
+    - jobService: JobService
+    - jobParsingService: JobParsingService
+    ' Base URL: /api/jobs
+    + createJob(job: Job): ResponseEntity<Job>   ' POST /api/jobs
+    + getAllJobs(): ResponseEntity<List<Job>>    ' GET /api/jobs
+    + getJobById(id: Long): ResponseEntity<Job>  ' GET /api/jobs/{id}
+
+    + deleteJob(id: Long): ResponseEntity<Void>        ' DELETE /api/jobs/{id}
+    + updateJobStatus(id: Long, newStatus: JobStatus): ResponseEntity<Job>     ' PATCH /api/jobs/{id}
+    + parseJobFromUrl(url: String): ResponseEntity<ParseJobResponseDto>                      ' POST /api/jobs/parse
+}
+
+
+'----------------- Relationships -----------------
+Job --> JobStatus: has a
+
+JobService --> JobRepository : uses
+JobRepository --> Job : manages
+JobService --> Job : operates on
+
+@enduml
+

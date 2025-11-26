@@ -1,0 +1,59 @@
+@startuml
+
+    ' User          = User
+    ' Waiter        = JobController 
+    ' Chef          = JobService + JobParsingService 
+    ' StorageMgr    = JobRepository 
+    ' Fridge        = Database
+    autonumber
+    actor Customer as User
+    participant Waiter as Controller
+    participant Chef as Service
+    participant StorageMgr as Repository
+    participant Fridge as Database
+
+
+    ' Step 1: Customer requests job posting
+    User ->> Controller: 1. Paste URL (submit url)
+    activate Controller
+
+    Controller ->> Service: 2. parseFromUrl(url)
+    activate Service
+
+    Service -> Service: Logic: Jsoup fetch & extract\n(Title, Company...)
+
+    Service -->> Controller: 3. Return ParseJobResponseDto    
+    deactivate Service
+
+    Controller -->> User: 4. JSON Preview (200 OK)
+    deactivate Controller
+
+
+    '== Step 2: User confirmed ParseJobResponseDto ==
+
+    User ->> Controller: 5. Click Save (Submit DTO)
+    activate Controller
+
+    Controller ->> Service: 6. createJob(dto)
+    activate Service
+
+    Service -> Service: Logic: Convert DTO -> Job Entity\nSet Status = APPLIED
+
+    Service ->> Repository: 7. save(job)
+    activate Repository
+
+    Repository ->> Database: SQL INSERT
+    activate Database
+    Database -->> Repository: OK (Row Created)
+    deactivate Database
+
+    Repository -->> Service: 8. Return Saved Job (with ID)
+    deactivate Repository
+
+    Service -->> Controller: 9. Return Job Object
+    deactivate Service
+    
+    Controller -->> User: 10. "Saved Successfully" (201 Created)
+    deactivate Controller
+   
+@enduml

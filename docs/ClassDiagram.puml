@@ -25,7 +25,7 @@ class Job {
 }
 
 ' ------ Encapsulates all persistence operations ------
-' ------- An interface talke to db for Job entity ------
+' ------- An interface talk to db for Job entity ------
 interface  JobRepository {
     + save(job: Job): Job
     + findById(id: Long): Optional<Job>

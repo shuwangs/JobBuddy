@@ -3,7 +3,7 @@ package com.jobbuddy.backend.model;
 public enum JobStatus {
     WAITLISTED,
     APPLIED,
-    INTERVIEWIN,
+    INTERVIEWED,
     OFFERED,
     REJECTED
 }

@@ -11,11 +11,11 @@ import java.util.Optional;
 public class JobService {
     private JobRepository jobRepo;
 
-    public JobService(JobRepository JobRepository) {
+    public JobService(JobRepository jobRepo) {
         this.jobRepo = jobRepo;
     }
 
-    public List<Job> listJobs(JobStatus status) {
+    public List<Job> listAllJobs() {
         return jobRepo.findAll();
     }
 
@@ -23,8 +23,8 @@ public class JobService {
         return jobRepo.findById(id).orElse(null);
     }
 
-    public void createJob(Job job) {
-        jobRepo.save(job);
+    public Job createJob(Job job) {
+        return jobRepo.save(job);
     }
 
     public void deleteJobById(Long id) {

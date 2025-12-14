@@ -1,7 +1,10 @@
 package com.jobbuddy.backend.controller;
 import com.jobbuddy.backend.model.Job;
 import com.jobbuddy.backend.model.JobStatus;
+import com.jobbuddy.backend.model.ParseJobResponseDto;
+import com.jobbuddy.backend.service.JobParsingService;
 import com.jobbuddy.backend.service.JobService;
+import com.jobbuddy.backend.service.JobParsingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,7 @@ import java.util.List;
 
 public class JobController {
     private final JobService jobService;
-
+    private final JobParsingService parsingService;
     public JobController(JobService jobService) {
         this.jobService = jobService;
     }
@@ -48,6 +51,12 @@ public class JobController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping("/parse")
+    public ResponseEntity<ParseJobResponseDto> parseJob(@RequestBody String url) {
+        String cleanUrl = url.replace("\"", "");
 
+        ParseJobResponseDto parsedData = parsingService.parse(cleanUrl);
+        return new ResponseEntity<>(parsedData, HttpStatus.OK);
+    }
 
 }

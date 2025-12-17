@@ -49,3 +49,12 @@
     - [ ] Load unpacked extension in Chrome (`chrome://extensions`) pointing to `dist/` folder.
     - [ ] Test parsing a real LinkedIn/Indeed page.
 
+| Pages           | API                         |
+| --------------- | --------------------------- |
+| Login           | `POST /api/auth/login`      |
+| Signup          | `POST /api/auth/signup`     |
+| Dashboard       | `GET /api/jobs`             |
+| Add Job (Parse) | `POST /api/jobs/parse`      |
+| Add Job (Save)  | `POST /api/jobs`            |
+| Update Status   | `PUT /api/jobs/{id}/status` |
+| Delete          | `DELETE /api/jobs/{id}`     |

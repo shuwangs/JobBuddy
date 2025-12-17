@@ -3,9 +3,16 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <nav className='navbar bg-light mb-4'>
-            JobBuddy
+        <nav className='navbar bg-light shadow-md p-4'>
+            <div className='navbar-brand max-w-7xl flex justify-between items-center'>
+                <div className='text-xl font-bold text-blue-600'>
+                    <Link to='/dashboard'>JobBuddy</Link>
+                </div>
+                <div className='space-x-4'>
+                    <Link to='/dashboard' className='text-gray-700 hover:text-blue-600'> Add Job </Link>
+                </div>
+            </div>
         </nav>
-    )
-}
+        ) 
+    }
 export default Navbar;

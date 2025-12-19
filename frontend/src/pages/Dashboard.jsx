@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
-import Stats from './Stats';
+import Stats from '../components/Stats';
 import "./Dashboard.css";
 
 const Dashboard = () => {

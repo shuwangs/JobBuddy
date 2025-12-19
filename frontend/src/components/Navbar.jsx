@@ -3,16 +3,15 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     return (
-        <nav className='bg-gray-800 shadow-md p-4'>
-            <div className='navbar-brand max-w-7xl flex justify-between items-center'>
-                <div className='text-xl font-bold text-blue-600'>
-                    <Link to='/dashboard'>JobBuddy</Link>
-                </div>
-                <div className='space-x-4'>
-                    <Link to='/dashboard' className='text-gray-700 hover:text-red-600'> Add Job </Link>
-                </div>
+        <nav relative className='relative bg-red-800/50 shadow p-4'>
+            <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
+                <a href="#" aria-current="page" class="rounded-md bg-gray-950/50 px-3 py-2 text-sm font-medium text-white">JobBuddy</a>
+                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">addJob</a>
+               
             </div>
         </nav>
+
+
         ) 
     }
 export default Navbar;

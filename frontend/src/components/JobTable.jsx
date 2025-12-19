@@ -1,6 +1,6 @@
 import React from 'react';
+import './JobTable.css';
 
-// 1. 修复语法错误：加上花括号 {
 const JobTable = ({ jobs }) => {
 
     const getStatusClass = (status) => {

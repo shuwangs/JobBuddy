@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
+import "./Dashboard.css";
 
 const Dashboard = () => {
 const [jobs, setJobs] = useState([
@@ -11,21 +12,21 @@ const [jobs, setJobs] = useState([
         { id: 5, company: "Meta", title: "Data Engineer", status: "Applied", date: "2023-12-08", location: "Menlo Park", salary: "170k" },
     ]);
 
-    // 2. 动态计算统计数据 (这样数据就永远是对的！)
+    // 2.
     const stats = [
         { 
             label: "Total Applications", 
-            value: jobs.length, // 自动计算总数
+            value: jobs.length,
             color: "blue" 
         },
         { 
             label: "Waiting Response", 
-            value: jobs.filter(j => j.status === "Applied").length, // 自动计算 Applied
+            value: jobs.filter(j => j.status === "Applied").length, //  Applied
             color: "yellow" 
         },
         { 
             label: "Interviews", 
-            value: jobs.filter(j => j.status === "Interview").length, // 自动计算 Interview
+            value: jobs.filter(j => j.status === "Interview").length, // Interview
             color: "green" 
         }
     ];

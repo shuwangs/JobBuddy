@@ -1,0 +1,19 @@
+.quote-area {
+  background-color: #eff6ff;
+  border-left: 4px solid var(--primary-color, #2563eb);
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+.quote-text {
+  color: var(--text-muted, #64748b);
+  font-style: italic;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}

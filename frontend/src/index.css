@@ -1,3 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+  --primary-color: #2563eb;       /* 鲜亮的宝蓝 */
+  --primary-hover: #1d4ed8;       /* 鼠标悬停时的深蓝 */
+  --accent-color:  #06b6d4;       /* Logo 里的青色，用于装饰 */
+  --primary-green: #10b981;  
+  --green-hover:   #059669;  
+
+  --bg-body:       #f8fafc;       
+  --bg-card:       #ffffff;       
+  --bg-input:      #f1f5f9;      
+
+  /* text color */
+  --text-main:     #0f172a;       
+  --text-muted:    #64748b;       
+  --text-light:    #94a3b8;  
+
+  /* 🟢🔴  (Status) -  Offer, Rejected */
+  --status-green:  #10b981;      
+  --status-red:    #ef4444;      
+  --status-yellow: #f59e0b;      
+
+  /* border color */
+  --border-color:  #e2e8f0;  
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}

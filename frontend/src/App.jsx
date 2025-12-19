@@ -3,7 +3,7 @@ import React from 'react';
 import {Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './components/Dashboard';
 function App() {
 
   return (
@@ -16,8 +16,8 @@ function App() {
 
       <div>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<h1 className="text-2xl">🚧 Dashboard Page</h1>} />
+          <Route path="/" element={<h1 className="text-2xl">🚧 Home Page</h1>} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-job" element={<h1 className="text-2xl">🚧 Add Job Page</h1>} />
         </Routes>
       </div>

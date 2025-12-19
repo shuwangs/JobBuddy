@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
+import Stats from './Stats';
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -12,24 +13,6 @@ const [jobs, setJobs] = useState([
         { id: 5, company: "Meta", title: "Data Engineer", status: "Applied", date: "2023-12-08", location: "Menlo Park", salary: "170k" },
     ]);
 
-    // 2.
-    const stats = [
-        { 
-            label: "Total Applications", 
-            value: jobs.length,
-            color: "blue" 
-        },
-        { 
-            label: "Waiting Response", 
-            value: jobs.filter(j => j.status === "Applied").length, //  Applied
-            color: "yellow" 
-        },
-        { 
-            label: "Interviews", 
-            value: jobs.filter(j => j.status === "Interview").length, // Interview
-            color: "green" 
-        }
-    ];
 
     // Daily Cheer logic 
     const getDailyCheerMessage = () => {
@@ -46,17 +29,8 @@ const [jobs, setJobs] = useState([
           <p className="text-sm text-gray-600 mb-4">{cheer}</p>
         </div>
 
-        <div className="stats-grid">
-          {stats.map((stat, index) => (
-            <div key={index} className="stat-card">
-              <div className={`stat-value text-${stat.color}`}>
-                {stat.value}
-              </div>
-              <div className="stat-label">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
+ 
+        <Stats jobs={jobs} />
         <JobTable jobs={jobs} />
       </div>
     );

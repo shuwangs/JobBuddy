@@ -28,7 +28,6 @@ const [jobs, setJobs] = useState([
         <div className="quote-area">
           <p className="text-sm text-gray-600 mb-4">{cheer}</p>
         </div>
-
  
         <Stats jobs={jobs} />
         <JobTable jobs={jobs} />

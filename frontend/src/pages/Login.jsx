@@ -19,6 +19,10 @@ const Login = () =>{
     <div className="auth-container">
       <div className="auth-card">
 
+        <h1 className="auth-title">
+          Welcome to JobBuddy !
+        </h1>
+
         <form onSubmit ={handleLogin} className="auth-form">
           <div className='form-group'>
             <label>Email</label>
@@ -44,7 +48,7 @@ const Login = () =>{
           <button type="submit" className="btn-submit">
             Log In
           </button>
-          
+
           <div className="auth-footer">
             Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link>
           </div>

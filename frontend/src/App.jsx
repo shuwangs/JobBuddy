@@ -6,6 +6,8 @@ import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import AddJob from './pages/AddJob'
+
 function App() {
 
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/add-job" element={<h1 className="text-2xl">🚧 Add Job Page</h1>} />
           <Route path='/login' element ={<Login />} />
           <Route path='/signup' element ={<Signup />} />
+          <Route path="/addjob" element ={<AddJob />} />
+
       </Routes>
 
     </div>

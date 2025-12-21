@@ -3,15 +3,13 @@
 ## Phase 1: Frontend Initialization (The "Face") 🎨
 - [ ] **Fix Backend CORS**
     - [X] Modify `WebConfig.java`: Change allowed origin to `http://localhost:5173` (Vite default).
-    - [ ] Restart Spring Boot backend.
 - [ ] **Setup React Environment**
-    - [ ] Install dependencies: `npm install axios react-router-dom tailwindcss postcss autoprefixer`
-    - [ ] Initialize Tailwind CSS: `npx tailwindcss init -p`
+    - [X] Install dependencies: `npm install axios react-router-dom tailwindcss postcss autoprefixer`
     - [ ] Configure `tailwind.config.js` (add content paths).
     - [ ] Add Tailwind directives to `index.css`.
 - [ ] **Develop Core Components**
-    - [ ] Create `components/AddJobForm.jsx` (Input URL -> Call `/api/jobs/parse` -> Save).
-    - [ ] Create `components/JobBoard.jsx` (Fetch `/api/jobs` -> Render list/table).
+    - [X] Create `components/AddJobForm.jsx` (Input URL -> Call `/api/jobs/parse` -> Save).
+    - [X] Create `components/JobBoard.jsx` (Fetch `/api/jobs` -> Render list/table).
     - [ ] Setup Routing in `App.jsx` (`/` for board, `/add` for adding).
 
 ## Phase 2: Data Persistence (The "Memory") 🧠

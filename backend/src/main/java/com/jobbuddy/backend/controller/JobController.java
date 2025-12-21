@@ -18,8 +18,10 @@ import java.util.List;
 public class JobController {
     private final JobService jobService;
     private final JobParsingService parsingService;
-    public JobController(JobService jobService) {
+
+    public JobController(JobService jobService, JobParsingService parsingService) {
         this.jobService = jobService;
+        this.parsingService = parsingService;
     }
 
     // Create a New Job

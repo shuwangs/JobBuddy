@@ -13,7 +13,7 @@ const Dashboard = () => {
 
     const fetchJobs = async ()=>{
         try {
-            const response = await axios.get('http://localhost:8081/api/jobs');
+            const response = await axios.get(`${process.env.VITE_API_BASE_URL}/api/jobs`);
             console.log(response);
             setJobs(response.data);
             } catch(error) {

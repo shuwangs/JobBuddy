@@ -24,7 +24,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="menu">
-                    <Link to="/add-job" className="btn-add">
+                    <Link to="/addjob" className="btn-add">
                         + Add Job 
                     </Link>
 

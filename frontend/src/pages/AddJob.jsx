@@ -55,7 +55,7 @@ const AddJob = () => {
 
 
   const [formData, setFormData] = useState({
-    company: '', title: '', status: 'Applied', date: new Date().toISOString().split('T')[0],
+    company: '', title: '', status: 'WAITLISTED', date: new Date().toISOString().split('T')[0],
     location: '', salary: '', url: '', note: ''
   });
 
@@ -85,11 +85,16 @@ const handleChange = (e) => {
             console.error("Failed to save job:", error);
             alert("Save failed, check console.");
         }
+
+        setFormData({ company: '', title: '', status: 'WAITLISTED',
+       location: '', salary: '', url: '', note: ''  })
+
   };
+
+
 
   const clearInputArea = () => {
     setParseUrl('');
-    setParseUrl(''); 
     setParsedJob(null);
   }
 

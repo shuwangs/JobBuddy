@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AddJob.css';
 
@@ -29,13 +30,30 @@ const AddJob = () => {
       setIsParsing(false);
     }, 2000)};
 
-  const handleAddJobToDb = () => {
+  const handleAddJobToDb = async () => {
     console.log("Saving to DB:", parsedJob);
 
-    // TODO: Call API to save
+    try {
+        const jobToSave = parsedJob ? {
+            title: parsedJob.title,
+            company: parsedJob.company,
+            location: parsedJob.location,
+            salaryRange: parsedJob.salary,
+            url: parsedJob.url,
+            status: "WAITLISTED"} : null;
 
-    clearInputArea();
+        if (!jobToSave) return;
+        // TODO: Call API to save
+        await axios.post('http://localhost:8081/api/jobs', jobToSave)
+        console.log("saved successfully!");
+        clearInputArea();
+    } catch (error) {
+        console.error("Failed to save job:", error);
+        alert("Save failed, check console.");
+    }
   }
+
+
   const [formData, setFormData] = useState({
     company: '', title: '', status: 'Applied', date: new Date().toISOString().split('T')[0],
     location: '', salary: '', url: '', note: ''
@@ -46,10 +64,27 @@ const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Manual Form Data:", formData);
-    // navigate('/dashboard');
+    try {
+        const jobToSave =  {
+            title: formData.title,
+            company: formData.company,
+            location: formData.location,
+            salaryRange: formData.salary,
+            url: formData.url,
+            note: formData.note,
+            status: formData.status ? formData.status.toUpperCase() : "WAITLISTED"} ;
+
+           // TODO: Call API to save
+            await axios.post('http://localhost:8081/api/jobs', jobToSave)
+            console.log("saved successfully!");
+            clearInputArea();
+        } catch (error) {
+            console.error("Failed to save job:", error);
+            alert("Save failed, check console.");
+        }
   };
 
   const clearInputArea = () => {
@@ -106,7 +141,6 @@ const handleChange = (e) => {
                 <td>{parsedJob.url}</td>
                 <td>{parsedJob.salary}</td>
               </tr>
-
             </tbody>
           </table>
 
@@ -131,20 +165,81 @@ const handleChange = (e) => {
       <div className="form-header">
         <h2 className="form-title">Or Add Manually</h2>
       </div>
-        
+
       <form onSubmit={handleSubmit}>
-        <div style={{padding:'20px', textAlign:'center', color:'#ccc'}}>
-          (Manual Form inputs go here...)
-        </div>
+          <div className="form-grid">
 
-        <div className="form-actions">
-          <button type="button" className="btn-cancel" onClick={() => navigate('/dashboard')}>Cancel</button>
-          <button type="submit" className="btn-save">Save Application</button>
-        </div>
+            {/* first line */}
+            <div className="form-group">
+              <label>Company Name *</label>
+              <input
+                type="text" name="company" required
+                className="form-input"
+                value={formData.company} onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Job Title *</label>
+              <input
+                type="text" name="title" required
+                className="form-input"
+                value={formData.title} onChange={handleChange}
+              />
+            </div>
+
+
+            <div className="form-group">
+              <label>Date Applied</label>
+              <input
+                type="date" name="date" className="form-input"
+                value={formData.date} onChange={handleChange}
+              />
+            </div>
+
+            {/* third line */}
+            <div className="form-group">
+              <label>Location</label>
+              <input
+                type="text" name="location" className="form-input"
+                value={formData.location} onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Salary Range</label>
+              <input
+                type="text" name="salary" className="form-input"
+                value={formData.salary} onChange={handleChange}
+              />
+            </div>
+
+            {/* url */}
+            <div className="form-group full-width">
+              <label>Job Posting URL</label>
+              <input
+                type="url" name="url" className="form-input"
+                value={formData.url} onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Notes</label>
+              <textarea
+                name="note" className="form-textarea"
+                value={formData.note} onChange={handleChange}
+              ></textarea>
+            </div>
+
+            </div>
+
+          <div className="form-actions">
+            <button type="button" className="btn-cancel" onClick={() => navigate('/dashboard')}>Cancel</button>
+            <button type="submit" className="btn-save">Save Application</button>
+          </div>
+
       </form>
-    </div>
-      
-
+ </div>
   </div>
   );
 };

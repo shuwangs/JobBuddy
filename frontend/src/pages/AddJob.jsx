@@ -2,36 +2,36 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AddJob.css';
-
 const AddJob = () => {
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    console.log(BASE_URL);
+    const navigate = useNavigate();
 
-  const navigate = useNavigate();
+    const [parseUrl, setParseUrl] = useState('');
+    const [isParsing, setIsParsing] = useState(false);
+    const [parsedJob, setParsedJob] = useState(null);
 
-  const [parseUrl, setParseUrl] = useState('');
-  const [isParsing, setIsParsing] = useState(false);
-  const [parsedJob, setParsedJob] = useState(null);
-
-  const handleParse = () =>{
-    if(!parseUrl) {return};
+    const handleParse = () =>{
+        if(!parseUrl) {return};
     
-    setIsParsing(true);
+        setIsParsing(true);
     
-    setTimeout(()=> {
-      let mockData = {
-        company: "Unknown Corp",
-        title: "Software Engineer",
-        location: "Remote",
-        salary: "Unknown",
-        url: parseUrl,
-        date: new Date().toISOString().split('T')[0],
-        status: "Applied"
-      }
-      setParsedJob(mockData);
-      setIsParsing(false);
-    }, 2000)};
+        setTimeout(()=> {
+            let mockData = {
+                company: "Unknown Corp",
+                title: "Software Engineer",
+                location: "Remote",
+                salary: "Unknown",
+                url: parseUrl,
+                date: new Date().toISOString().split('T')[0],
+                status: "Applied"
+            }
+            setParsedJob(mockData);
+            setIsParsing(false);
+        }, 2000)};
 
-  const handleAddJobToDb = async () => {
-    console.log("Saving to DB:", parsedJob);
+    const handleAddJobToDb = async () => {
+        console.log("Saving to DB:", parsedJob);
 
     try {
         const jobToSave = parsedJob ? {
@@ -44,7 +44,7 @@ const AddJob = () => {
 
         if (!jobToSave) return;
         // TODO: Call API to save
-        await axios.post(`${process.env.VITE_API_BASE_URL}/api/jobs`, jobToSave)
+        await axios.post(`${BASE_URL}/api/jobs`, jobToSave)
         console.log("saved successfully!");
         clearInputArea();
     } catch (error) {
@@ -78,7 +78,7 @@ const handleChange = (e) => {
             status: formData.status ? formData.status.toUpperCase() : "WAITLISTED"} ;
 
            // TODO: Call API to save
-            await axios.post(`${process.env.VITE_API_BASE_URL}/api/jobs`, jobToSave)
+            await axios.post(`${BASE_URL}/api/jobs`, jobToSave)
             console.log("saved successfully!");
             clearInputArea();
         } catch (error) {

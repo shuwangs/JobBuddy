@@ -6,6 +6,8 @@ import Stats from '../components/Stats';
 import "./Dashboard.css";
 
 const Dashboard = () => {
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    console.log("👉 Current Backend URL:", BASE_URL);
     const [jobs, setJobs] = useState([]);
     useEffect(() => {
             fetchJobs();
@@ -13,7 +15,8 @@ const Dashboard = () => {
 
     const fetchJobs = async ()=>{
         try {
-            const response = await axios.get(`${process.env.VITE_API_BASE_URL}/api/jobs`);
+            const response = await axios.get(`${BASE_URL}/api/jobs`);
+            console.log(`${BASE_URL}/api/jobs`);
             console.log(response);
             setJobs(response.data);
             } catch(error) {

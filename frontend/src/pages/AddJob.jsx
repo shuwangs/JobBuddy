@@ -11,46 +11,61 @@ const AddJob = () => {
     const [isParsing, setIsParsing] = useState(false);
     const [parsedJob, setParsedJob] = useState(null);
 
-    const handleParse = () =>{
-        if(!parseUrl) {return};
-    
+    const handleParse = async () =>{
+        if (!parseUrl) return;
+
         setIsParsing(true);
-    
-        setTimeout(()=> {
-            let mockData = {
-                company: "Unknown Corp",
-                title: "Software Engineer",
-                location: "Remote",
-                salary: "Unknown",
-                url: parseUrl,
-                date: new Date().toISOString().split('T')[0],
-                status: "Applied"
-            }
-            setParsedJob(mockData);
+        setParsedJob(null);
+
+        try {
+            const response = await axios.post(`${BASE_URL}/api/jobs/parse`, { url: parseUrl });
+                const data =  response.data;
+
+                if(!data.success) {
+                    alert("Parsing failed: " + data.error);
+                    return;
+                }
+
+                let JobData={
+                    company: data.company,
+                    title: data.title,
+                    location: data.location,
+                    salary: data.salaryRange,
+                    url: parseUrl,
+                    date: new Date().toISOString().split('T')[0],
+                    status: "WAITLISTED"
+                }
+            setParsedJob(jobData);
+
+        } catch(error){
+            console.error("Parse error:", error);
+            alert("Failed to connect to parser service.")
+        } finally {
             setIsParsing(false);
-        }, 2000)};
+        }
+    };
 
     const handleAddJobToDb = async () => {
         console.log("Saving to DB:", parsedJob);
+        handleParse();
+        try {
+            const jobToSave = parsedJob ? {
+                title: parsedJob.title,
+                company: parsedJob.company,
+                location: parsedJob.location,
+                salaryRange: parsedJob.salary,
+                url: parsedJob.url,
+                status: "WAITLISTED"} : null;
 
-    try {
-        const jobToSave = parsedJob ? {
-            title: parsedJob.title,
-            company: parsedJob.company,
-            location: parsedJob.location,
-            salaryRange: parsedJob.salary,
-            url: parsedJob.url,
-            status: "WAITLISTED"} : null;
-
-        if (!jobToSave) return;
-        // TODO: Call API to save
-        await axios.post(`${BASE_URL}/api/jobs`, jobToSave)
-        console.log("saved successfully!");
-        clearInputArea();
-    } catch (error) {
-        console.error("Failed to save job:", error);
-        alert("Save failed, check console.");
-    }
+            if (!jobToSave) return;
+            // TODO: Call API to save
+            await axios.post(`${BASE_URL}/api/jobs`, jobToSave)
+            console.log("saved successfully!");
+            clearInputArea();
+        } catch (error) {
+            console.error("Failed to save job:", error);
+            alert("Save failed, check console.");
+        }
   }
 
 

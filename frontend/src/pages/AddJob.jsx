@@ -44,7 +44,7 @@ const AddJob = () => {
 
         if (!jobToSave) return;
         // TODO: Call API to save
-        await axios.post('http://localhost:8081/api/jobs', jobToSave)
+        await axios.post('`${process.env.VITE_API_BASE_URL}/api/jobs`/api/jobs', jobToSave)
         console.log("saved successfully!");
         clearInputArea();
     } catch (error) {

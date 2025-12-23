@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { width: 320px; padding: 15px; font-family: 'Segoe UI', sans-serif; }
+    h3 { margin-top: 0; color: #2c3e50; }
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 6px;
+      font-weight: bold; cursor: pointer; margin-top: 10px;
+      transition: 0.2s;
+    }
+    .btn-save { background-color: #27ae60; color: white; }
+    .btn-save:hover { background-color: #219150; }
+    
+    #status { 
+      margin-top: 15px; font-size: 13px; color: #666; 
+      padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;
+    }
+    .success { color: #27ae60; border-left: 3px solid #27ae60; }
+    .error { color: #e74c3c; border-left: 3px solid #e74c3c; }
+  </style>
+</head>
+<body>
+  <h3> JobBuddy Saver</h3>
+  <p style="font-size:12px; color:#7f8c8d">Detected an Job page?</p>
+  
+  <button id="parseBtn" class="btn btn-save">
+    ✨ Parse & Save to DB
+  </button>
+
+  <div id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

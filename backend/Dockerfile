@@ -34,4 +34,4 @@ EXPOSE 8080
 
 # -------------Start  jar ---------
 
-CMD sh -c "java -jar target/*.jar"
+ENTRYPOINT ["java", "-jar", "app.jar"]

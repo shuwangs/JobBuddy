@@ -8,7 +8,7 @@ public class ParseJobResponseDto {
     private String salaryRange;
     private String url;
     private String status;
-
+    private String jobType;
     private boolean success;
     private String error;
 
@@ -20,7 +20,7 @@ public class ParseJobResponseDto {
     public String getSalaryRange() {return salaryRange;}
     public String getUrl() {return url;}
     public String getStatus() { return status; }
-
+    public String getJobType() {return jobType;}
     public boolean isSuccess() { return success; }
     public String getError() { return error; }
 
@@ -32,7 +32,7 @@ public class ParseJobResponseDto {
     public void setSalaryRange(String salaryRange) { this.salaryRange = salaryRange; }
     public void setUrl(String url) { this.url = url; }
     public void setStatus(String status) { this.status = status; }
-
+    public void setJobType(String jobType) { this.jobType = jobType; }
     public void setSuccess(boolean success) { this.success = success; }
     public void setError(String error) { this.error = error; }
 }

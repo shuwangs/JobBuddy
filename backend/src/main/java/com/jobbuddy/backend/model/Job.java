@@ -32,10 +32,15 @@ public class Job {
 
     @Enumerated(EnumType.STRING)
     private JobStatus status;
-    private String notes;
 
+    @Column
+    private String notes;
+    @Column
     private String requisitionNumber;
+    @Column
     private String salaryRange;
+    @Column
+    private String jobType;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

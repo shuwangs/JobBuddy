@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -54,10 +54,16 @@ public class JobController {
     }
 
     @PostMapping("/parse")
-    public ResponseEntity<ParseJobResponseDto> parseJob(@RequestBody String url) {
-        String cleanUrl = url.replace("\"", "");
-
-        ParseJobResponseDto parsedData = parsingService.parse(cleanUrl);
+    public ResponseEntity<ParseJobResponseDto> parseJob(@RequestBody Map<String, String> requestBody) {
+        String url = requestBody.get("url");
+        System.out.println("🔍 Controller received URL: " + url);
+        if(url == null || url.isEmpty() ){
+            ParseJobResponseDto errorDto = new ParseJobResponseDto();
+            errorDto.setSuccess(false);
+            errorDto.setError("URL is missing");
+            return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+        }
+        ParseJobResponseDto parsedData = parsingService.parse(url);
         return new ResponseEntity<>(parsedData, HttpStatus.OK);
     }
 

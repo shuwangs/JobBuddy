@@ -33,11 +33,10 @@ public class JobParsingService {
         try{
             Document doc;
 
-            // ⚠️ 针对 Indeed 使用 Selenium，其他网站继续用轻量级的 Jsoup
+            //   Indeed use Selenium，while others use Jsoup
             if (url.contains("indeed.com")) {
                 doc = fetchWithSelenium(url);
             } else {
-                // 原有的 Jsoup 逻辑 (保留之前的 Header 伪装)
                 doc = Jsoup.connect(url)
                         .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                         .header("Accept-Language", "en-US,en;q=0.9")
@@ -152,13 +151,13 @@ public class JobParsingService {
         // configure ChromeDriver
         WebDriverManager.chromedriver().setup();
 
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--disable-blink-features=AutomationControlled");
         // fake User-Agent
         options.addArguments("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 

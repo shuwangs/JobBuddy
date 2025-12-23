@@ -1,0 +1,1 @@
+// connect the content script to the backend db

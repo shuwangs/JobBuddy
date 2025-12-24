@@ -4,11 +4,11 @@ const getJobDetails = () => {
   console.log("JobBuddy: URL -", url);
 
   if(url.includes("linkedin.com/jobs/view/")) {
-    return extractLinkedInJobDetails();
+    return extractLinkedInJobDetails(url);
   } else if(url.includes("indeed.com/viewjob?")) {
-    return extractIndeedJobDetails();
+    return extractIndeedJobDetails(url);
   } else if(url.includes("glassdoor.com/job-listing/")) { 
-    return extractGlassdoorJobDetails();
+    return extractGlassdoorJobDetails(url);
   } else {
     console.log("JobBuddy: Unsupported job board.");
     return null;
@@ -29,20 +29,66 @@ const extractIndeedJobDetails = (url) => {
     let location = document.querySelector('[data-testid="inlineHeader-companyLocation"]')?.innerText
               || document.querySelector('.jobsearch-JobInfoHeader-subtitle div:last-child')?.innerText
               || "";
-    let salary = document.querySelector('#salaryInfoAndJobType')?.innerText
+    let salaryText = document.querySelector('#salaryInfoAndJobType')?.innerText
             || document.querySelector('.jobsearch-JobMetadataHeader-item')?.innerText
             || "";
+    
+    let parts = rawText.split(' - ');
+    let jobType = parts.pop(); 
+    let salaryRange = parts.join(' - ');
 
     const jobPayload = {
     title: title,
     company: company,
     location: location,
-    salaryRange: salaryRaw,  
+    salaryRange: salaryRange,  
     url: url,
     status: "WAITLISTED",    
-    description: description.substring(0, 500)
+    jobType: jobType,
+    note: null
   };
 
   return jobPayload;
 };
-const extractGlassdoorJobDetails = () => {};
+const extractGlassdoorJobDetails = (url) => {
+      let title = document.querySelector('header h1')?.innerText 
+          || document.querySelector('[data-test="job-title"]')?.innerText
+          || document.querySelector('[class*="heading_Level1"]')?.innerText
+          || "Unknown Title";
+
+    let company = document.querySelector('[class*="EmployerProfile_employerNameHeading"]')?.innerText
+             || document.querySelector('[data-test="employer-name"]')?.innerText
+             || "Unknown Company"
+
+    let location = document.querySelector('[data-test="location"]')?.innerText
+              || document.querySelector('[class*="JobDetails_location"]')?.innerText
+              || "";
+    let salaryRange = document.querySelector('[data-test="detailSalary"]')?.innerText
+            || document.querySelector('.salary-estimate-section')?.innerText
+            || "";
+
+    const lowerTitle = title.toLowerCase();
+    const lowerSalary = salaryRange.toLowerCase();
+    const jobType = "full-time";
+    if (lowerTitle.includes("intern") || lowerTitle.includes("internship")) {
+        jobType = "Internship";
+    } else if (lowerTitle.includes("contract") || lowerTitle.includes("contractor")) {
+        jobType = "Contract";
+    } else if (lowerTitle.includes("part-time") || lowerTitle.includes("part time")) {
+        jobType = "Part-time";
+    } else if (lowerSalary.includes("hour")) {
+        jobType = "Contract/Hourly"; 
+    }
+    const jobPayload = {
+      title: title,
+      company: company,
+      location: location,
+      salaryRange: salaryRange,  
+      url: url,
+      status: "WAITLISTED",    
+      jobType: jobType,
+      note: null
+    };
+
+  return jobPayload;
+};

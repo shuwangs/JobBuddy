@@ -1,3 +1,4 @@
+// --------------- Get job Details Logic --------------------
 const getJobDetails = () => {
   console.log("JobBuddy: Starting extraction...");
   const url = window.location.href;
@@ -16,7 +17,7 @@ const getJobDetails = () => {
 
 }
 
-
+// --------------- Helpers to get job details--------------------
 const extractLinkedInJobDetails = (url) => {
     console.log("JobBuddy: Parsing LinkedIn...");
 
@@ -76,7 +77,6 @@ const extractLinkedInJobDetails = (url) => {
   return jobPayload;
 };
 
-
 const extractIndeedJobDetails = (url) => {
     let title = document.querySelector('h1')?.innerText 
            || document.querySelector('.jobsearch-JobInfoHeader-title')?.innerText
@@ -112,6 +112,7 @@ const extractIndeedJobDetails = (url) => {
 
   return jobPayload;
 };
+
 const extractGlassdoorJobDetails = (url) => {
       let title = document.querySelector('header h1')?.innerText 
           || document.querySelector('[data-test="job-title"]')?.innerText
@@ -156,3 +157,50 @@ const extractGlassdoorJobDetails = (url) => {
 
   return jobPayload;
 };
+
+
+// --------------- Send Data to the backend --------------------
+const saveJobToBackend = async() =>{
+    console.log("JobBuddy is extracting the data...");
+    const payload = getJobDetails();
+
+    if(!payload.title) {
+      console.error("Jobbuddy didnot extract the job details successfully");
+      return;
+    }
+
+    console.log("JobBuddy is sending the data to the db");
+
+    try {
+        const response = await fetch("https://jobbuddy-u6n3.onrender.com/api/jobs",
+            {method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body : JSON.stringify(payload);
+            }
+        )
+
+        if(response.ok) {
+            console.log("JobBuddy: ✅ Saved!");
+            alert("✅ Job saved to JobBuddy!");
+        }else {
+            console.error("JobBuddy: ❌ server error:", response.status);
+            alert("❌ Save failed. Check console.");
+        }
+    } catch (error) {
+        console.error("JobBuddy: ❌ (Is Spring Boot running?)", error);
+        alert("❌ Network Error. Is Backend running?");
+      }
+}
+
+
+// --------------- Add Event Listener ------------------
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "SAVE_JOB") {
+    saveJobToBackend();
+    
+    sendResponse({status: "Processing"});
+  }
+  return true
+})

@@ -35,7 +35,7 @@ const extractLinkedInJobDetails = (url) => {
               || document.querySelector('.job-details-jobs-unified-top-card__workplace-type')?.innerText
               || "";
     let location = locationContainer.split(' · ')[0].trim();
-    
+
     const detailsContainer = document.querySelector('.job-details-fit-level-preferences');
     let salaryRange = null;
     let workplaceType = null;
@@ -49,12 +49,12 @@ const extractLinkedInJobDetails = (url) => {
             if (textElement) {
                 const text = textElement.textContent.trim();
 
-                if (text.includes('$') || text.match('/\d/')) {
+                if (text.includes('$') || text.match(/\d/)) {
                     salaryRange = text;
                 } else if (['On-site', 'Remote', 'Hybrid'].some(type => text.includes(type))) {
                     workplaceType = text;
-                } else if(['Intership', "Full-time", 'Contract', 'Part-time'].some(type => text.includes(text) )) {
-                    jobType = text
+                } else if(['Intership', "Full-time", 'Contract', 'Part-time'].some(type => text.includes(type) )) {
+                    jobType = text;
                 }
             }
         });
@@ -62,16 +62,16 @@ const extractLinkedInJobDetails = (url) => {
         console.log("Salary:", salaryRange);         
         console.log("Workplace:", workplaceType)
     }
-      const jobPayload = {
-          title: title,
-          company: company,
-          location: location,
-          salaryRange: salaryRange,  
-          url: url,
-          status: "WAITLISTED",    
-          jobType: jobType,
-          // workplaceType: workplaceType,
-          note: null}
+    const jobPayload = {
+        title: title,
+        company: company,
+        location: location,
+        salaryRange: salaryRange,  
+        url: url,
+        status: "WAITLISTED",    
+        jobType: jobType,
+        // workplaceType: workplaceType,
+        note: null}
 
   return jobPayload;
 };
@@ -89,7 +89,7 @@ const extractIndeedJobDetails = (url) => {
     let location = document.querySelector('[data-testid="inlineHeader-companyLocation"]')?.innerText
               || document.querySelector('.jobsearch-JobInfoHeader-subtitle div:last-child')?.innerText
               || "";
-    let salaryText = document.querySelector('#salaryInfoAndJobType')?.innerText
+    let rawText = document.querySelector('#salaryInfoAndJobType')?.innerText
             || document.querySelector('.jobsearch-JobMetadataHeader-item')?.innerText
             || "";
     
@@ -131,7 +131,7 @@ const extractGlassdoorJobDetails = (url) => {
 
     const lowerTitle = title.toLowerCase();
     const lowerSalary = salaryRange.toLowerCase();
-    const jobType = "full-time";
+    let jobType;
     if (lowerTitle.includes("intern") || lowerTitle.includes("internship")) {
         jobType = "Internship";
     } else if (lowerTitle.includes("contract") || lowerTitle.includes("contractor")) {

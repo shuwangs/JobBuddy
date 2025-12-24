@@ -4,9 +4,13 @@ const getJobDetails = () => {
   const url = window.location.href;
   console.log("JobBuddy: URL -", url);
 
-  if(url.includes("linkedin.com/jobs/view/")) {
+  if(url.includes("linkedin.com/jobs/view/") || 
+    url.includes("linkedin.com/jobs/collections/") || 
+    url.includes("linkedin.com/jobs/search/")) {
     return extractLinkedInJobDetails(url);
-  } else if(url.includes("indeed.com/viewjob?")) {
+  } else if(url.includes("indeed.com/viewjob") || 
+    url.includes("indeed.com/job") || 
+    url.includes("indeed.com/?from=gnav")) {
     return extractIndeedJobDetails(url);
   } else if(url.includes("glassdoor.com/job-listing/")) { 
     return extractGlassdoorJobDetails(url);
@@ -78,7 +82,7 @@ const extractLinkedInJobDetails = (url) => {
 };
 
 const extractIndeedJobDetails = (url) => {
-    let title = document.querySelector('h1')?.innerText 
+    let title = document.querySelector('[data-testid="jobsearch-JobInfoHeader-title"]')?.innerText 
            || document.querySelector('.jobsearch-JobInfoHeader-title')?.innerText
            || "Unknown Title";
 
@@ -164,43 +168,40 @@ const saveJobToBackend = async() =>{
     console.log("JobBuddy is extracting the data...");
     const payload = getJobDetails();
 
-    if(!payload.title) {
+    if(!payload) {
       console.error("Jobbuddy didnot extract the job details successfully");
       return;
     }
 
-    console.log("JobBuddy is sending the data to the db");
+    console.log("JobBuddy: Payload ready. Handing off to Background Script...", payload);
 
-    try {
-        const response = await fetch("https://jobbuddy-u6n3.onrender.com/api/jobs",
-            {method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body : JSON.stringify(payload);
-            }
-        )
-
-        if(response.ok) {
-            console.log("JobBuddy: ✅ Saved!");
-            alert("✅ Job saved to JobBuddy!");
-        }else {
-            console.error("JobBuddy: ❌ server error:", response.status);
-            alert("❌ Save failed. Check console.");
+    chrome.runtime.sendMessage(
+        { 
+          action: "SEND_PAYLOAD_TO_BACKEND", 
+          payload: payload 
+        }, 
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.error("Connection Error:", chrome.runtime.lastError.message);
+            alert("Extension Error: Please reload the extension.");
+          } else if (response && response.success) {
+            console.log("JobBuddy:  Saved Successfully!");
+            alert("Job saved to JobBuddy!");
+          } else {
+            console.error("JobBuddy: Save Failed:", response?.error);
+            alert("Save failed: " + (response?.error || "Unknown error"));
+          }
         }
-    } catch (error) {
-        console.error("JobBuddy: ❌ (Is Spring Boot running?)", error);
-        alert("❌ Network Error. Is Backend running?");
-      }
+    );
 }
 
 
 // --------------- Add Event Listener ------------------
+console.log("JobBuddy: Content Script Loaded and Ready!");
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "SAVE_JOB") {
     saveJobToBackend();
-    
     sendResponse({status: "Processing"});
   }
-  return true
-})
+  return true;
+});

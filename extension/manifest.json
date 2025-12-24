@@ -6,18 +6,17 @@
   "permissions": ["activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html"
-    // "default_icon": {
-    //   "16": "icon.png", 
-    //   "48": "icon.png",
-    //   "128": "icon.png"
-    // }
   },
   "host_permissions": [
-    "https://www.indeed.com/*",
-    "https://www.linkedin.com/*",
+    "*://*.indeed.com/*",
+    "*://*.linkedin.com/*",
+    "*://*.glassdoor.com/*",
     "http://localhost:8080/*", 
     "https://jobbuddy-u6n3.onrender.com/*" 
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -28,5 +27,4 @@
       "js": ["content.js"]
     }
   ]
-
 }

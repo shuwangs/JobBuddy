@@ -4,7 +4,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "SEND_PAYLOAD_TO_BACKEND") {
     console.log("JobBuddy Background: Received payload, sending to server...");
 
-    // 你的后端地址 (如果是本地测试请改成 http://localhost:8080/api/jobs)
     const API_URL = "https://jobbuddy-u6n3.onrender.com/api/jobs";
 
     fetch(API_URL, {

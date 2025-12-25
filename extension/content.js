@@ -12,7 +12,8 @@ const getJobDetails = () => {
     url.includes("indeed.com/job") || 
     url.includes("indeed.com/?from=gnav")) {
     return extractIndeedJobDetails(url);
-  } else if(url.includes("glassdoor.com/job-listing/")) { 
+  } else if(url.includes("glassdoor.com/job-listing/") ||
+    url.includes('glassdoor.com/Job')) { 
     return extractGlassdoorJobDetails(url);
   } else {
     console.log("JobBuddy: Unsupported job board.");
@@ -25,18 +26,18 @@ const getJobDetails = () => {
 const extractLinkedInJobDetails = (url) => {
     console.log("JobBuddy: Parsing LinkedIn...");
     const detailsContainer = document.querySelector('.jobs-details__main-content') 
-                              || document.querySelector('.scaffold-layout__detail') 
-                              || document;
+        || document.querySelector('.scaffold-layout__detail') 
+        || document;
 
     let title = detailsContainer.querySelector('.job-details-jobs-unified-top-card__job-title h1')?.innerText
-             || detailsContainer.querySelector('.top-card-layout__title')?.innerText
-             || detailsContainer.querySelector('h1')?.innerText 
-             || "Unknown Title";
+        || detailsContainer.querySelector('.top-card-layout__title')?.innerText
+        || detailsContainer.querySelector('h1')?.innerText 
+        || "Unknown Title";
 
     let company = detailsContainer.querySelector('.job-details-jobs-unified-top-card__company-name a')?.innerText
-             || detailsContainer.querySelector('.topcard__org-name-link')?.innerText
-             || detailsContainer.querySelector('.job-details-jobs-unified-top-card__company-name')?.innerText
-             || "Unknown Company";
+        || detailsContainer.querySelector('.topcard__org-name-link')?.innerText
+        || detailsContainer.querySelector('.job-details-jobs-unified-top-card__company-name')?.innerText
+        || "Unknown Company";
 
     let location = ""; 
     const primaryDesc = detailsContainer.querySelector('.job-details-jobs-unified-top-card__primary-description-container');
@@ -95,19 +96,19 @@ const extractLinkedInJobDetails = (url) => {
 
 const extractIndeedJobDetails = (url) => {
     let title = document.querySelector('[data-testid="jobsearch-JobInfoHeader-title"]')?.innerText 
-           || document.querySelector('.jobsearch-JobInfoHeader-title')?.innerText
-           || "Unknown Title";
+        || document.querySelector('.jobsearch-JobInfoHeader-title')?.innerText
+        || "Unknown Title";
 
     let company = document.querySelector('[data-company-name="true"]')?.innerText
-             || document.querySelector('.jobsearch- a')?.innerText
-             || "Unknown Company";
+        || document.querySelector('.jobsearch- a')?.innerText
+        || "Unknown Company";
 
     let location = document.querySelector('[data-testid="inlineHeader-companyLocation"]')?.innerText
-              || document.querySelector('.jobsearch-JobInfoHeader-subtitle div:last-child')?.innerText
-              || "";
+        || document.querySelector('.jobsearch-JobInfoHeader-subtitle div:last-child')?.innerText
+        || "";
     let rawText = document.querySelector('#salaryInfoAndJobType')?.innerText
-            || document.querySelector('.jobsearch-JobMetadataHeader-item')?.innerText
-            || "";
+        || document.querySelector('.jobsearch-JobMetadataHeader-item')?.innerText
+        || "";
     
     let parts = rawText.split(' - ');
     let jobType = parts.pop(); 
@@ -130,21 +131,21 @@ const extractIndeedJobDetails = (url) => {
 };
 
 const extractGlassdoorJobDetails = (url) => {
-      let title = document.querySelector('header h1')?.innerText 
-          || document.querySelector('[data-test="job-title"]')?.innerText
-          || document.querySelector('[class*="heading_Level1"]')?.innerText
-          || "Unknown Title";
+    let title = document.querySelector('header h1')?.innerText 
+        || document.querySelector('[data-test="job-title"]')?.innerText
+        || document.querySelector('[class*="heading_Level1"]')?.innerText
+        || "Unknown Title";
 
     let company = document.querySelector('[class*="EmployerProfile_employerNameHeading"]')?.innerText
-             || document.querySelector('[data-test="employer-name"]')?.innerText
-             || "Unknown Company"
+        || document.querySelector('[data-test="employer-name"]')?.innerText
+        || "Unknown Company"
 
     let location = document.querySelector('[data-test="location"]')?.innerText
-              || document.querySelector('[class*="JobDetails_location"]')?.innerText
-              || "";
+        || document.querySelector('[class*="JobDetails_location"]')?.innerText
+        || "";
     let salaryRange = document.querySelector('[data-test="detailSalary"]')?.innerText
-            || document.querySelector('.salary-estimate-section')?.innerText
-            || "";
+        || document.querySelector('.salary-estimate-section')?.innerText
+        || "";
 
     const lowerTitle = title.toLowerCase();
     const lowerSalary = salaryRange.toLowerCase();
@@ -158,12 +159,22 @@ const extractGlassdoorJobDetails = (url) => {
     } else if (lowerSalary.includes("hour")) {
         jobType = "Contract/Hourly"; 
     }
+
+    let cleanUrl="";
+    const applyBtn = document.querySelector('a[href*="jobListingId"]'); 
+    if (applyBtn && applyBtn.href) {
+        const match = applyBtn.href.match(/jobListingId=(\d+)/);
+        if (match && match[1]) {
+            cleanUrl = `https://www.glassdoor.com/job-listing/view.htm?jl=${match[1]}`;
+        }
+    }
+    
     const jobPayload = {
       title: title,
       company: company,
       location: location,
       salaryRange: salaryRange,  
-      url: url,
+      url: cleanUrl,
       status: "WAITLISTED",    
       jobType: jobType,
       // workplaceType: workplaceType,

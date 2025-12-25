@@ -24,29 +24,41 @@ const getJobDetails = () => {
 // --------------- Helpers to get job details--------------------
 const extractLinkedInJobDetails = (url) => {
     console.log("JobBuddy: Parsing LinkedIn...");
+    const detailsContainer = document.querySelector('.jobs-details__main-content') 
+                              || document.querySelector('.scaffold-layout__detail') 
+                              || document;
 
-    let title = document.querySelector('.job-details-jobs-unified-top-card__job-title h1')?.innerText
-             || document.querySelector('.top-card-layout__title')?.innerText
-             || document.querySelector('h1')?.innerText 
+    let title = detailsContainer.querySelector('.job-details-jobs-unified-top-card__job-title h1')?.innerText
+             || detailsContainer.querySelector('.top-card-layout__title')?.innerText
+             || detailsContainer.querySelector('h1')?.innerText 
              || "Unknown Title";
 
-    let company = document.querySelector('.job-details-jobs-unified-top-card__company-name a')?.innerText
-             || document.querySelector('.topcard__org-name-link')?.innerText
-             || document.querySelector('.job-details-jobs-unified-top-card__company-name')?.innerText
+    let company = detailsContainer.querySelector('.job-details-jobs-unified-top-card__company-name a')?.innerText
+             || detailsContainer.querySelector('.topcard__org-name-link')?.innerText
+             || detailsContainer.querySelector('.job-details-jobs-unified-top-card__company-name')?.innerText
              || "Unknown Company";
 
-    let locationContainer = document.querySelector('.job-details-jobs-unified-top-card__tertiary-description-container span:first-child')?.innerText
-              || document.querySelector('.topcard__flavor--bullet')?.innerText 
-              || document.querySelector('.job-details-jobs-unified-top-card__workplace-type')?.innerText
+    let location = ""; 
+    const primaryDesc = detailsContainer.querySelector('.job-details-jobs-unified-top-card__primary-description-container');
+    if (primaryDesc) {
+        const parts = primaryDesc.innerText.split(/·|•/); 
+        location = parts.find(p => {
+            const t = p.trim();
+            return t.length > 2 && !t.includes("Reposted") && !t.includes("ago") && !t.includes(company.trim());
+        })?.trim();
+    }
+    if (!location) {
+         let locContainer = detailsContainer.querySelector('.job-details-jobs-unified-top-card__tertiary-description-container span:first-child')?.innerText
+              || detailsContainer.querySelector('.topcard__flavor--bullet')?.innerText 
               || "";
-    let location = locationContainer.split(' · ')[0].trim();
-
-    const detailsContainer = document.querySelector('.job-details-fit-level-preferences');
+         location = locContainer.split('·')[0].trim();
+    }
+    const detailsPreferences = detailsContainer.querySelector('.job-details-fit-level-preferences');
     let salaryRange = null;
     let workplaceType = null;
     let jobType = null;
-    if (detailsContainer) {
-        const buttons = detailsContainer.querySelectorAll('button');
+    if (detailsPreferences) {
+        const buttons = detailsPreferences.querySelectorAll('button');
 
         buttons.forEach(button => {
             // Find the strong tag which holds the actual text

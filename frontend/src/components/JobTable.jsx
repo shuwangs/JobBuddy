@@ -66,7 +66,7 @@ const JobTable = ({ jobs }) => {
                             <td>{job.requisitionNumber || "-"}</td>
 
                             {/* 8. Salary */}
-                            <td>{job.salary || "-"}</td>
+                            <td>{job.salaryRange || "-"}</td>
 
                             {/* 9. Updated At */}
                             <td className="date-text">{job.date}</td>

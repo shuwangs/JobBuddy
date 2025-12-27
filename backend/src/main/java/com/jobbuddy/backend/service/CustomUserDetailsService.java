@@ -1,5 +1,4 @@
 package com.jobbuddy.backend.service;
-import com.jobbuddy.backend.model.Job;
 import com.jobbuddy.backend.model.User;
 import com.jobbuddy.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 
 
 @Service
@@ -23,11 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
-
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                Collection.emptyList()
+                Collections.emptyList()
         );
     }
 }

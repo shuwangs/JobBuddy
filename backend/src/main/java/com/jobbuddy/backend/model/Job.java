@@ -42,6 +42,11 @@ public class Job {
     @Column
     private String jobType;
 
+    // add userId information
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     HandlerExceptionResolver handlerExceptionResolver;
 
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, CustomUserDetailsService customUserDetailsService) {
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, CustomUserDetailsService customUserDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtUtils = jwtUtils;
         this.customUserDetailsService = customUserDetailsService;
         this.handlerExceptionResolver = handlerExceptionResolver;
@@ -69,6 +69,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         }catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
+            if(response.getStatus()==200) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("Access Denied: " + exception.getMessage());
+                response.getWriter().flush();
+            }
         }
 
 

@@ -1,6 +1,6 @@
 package com.jobbuddy.backend.config;
-import com.jobbuddy.backend.repository.UserRepository;
 import com.jobbuddy.backend.service.CustomUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import com.jobbuddy.backend.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +50,7 @@ public class SecurityConfig {
                         session ->session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider())
+                .authenticationProvider(authenticationProvider(customUserDetailsService))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -73,10 +73,9 @@ public class SecurityConfig {
 
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    public AuthenticationProvider authenticationProvider(CustomUserDetailsService customUserDetailsService) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 

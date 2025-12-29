@@ -13,6 +13,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
+@Component
 public class JwtUtils {
 
     // Inject secret keys and expiration from application.properties
@@ -66,6 +67,6 @@ public class JwtUtils {
     }
 
     private Key getSignInKey() {
-        return Keys.hmacShaKeyFor(secretKey .getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 }

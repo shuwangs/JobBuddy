@@ -19,7 +19,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-job" element={<h1 className="text-2xl">🚧 Add Job Page</h1>} />
           <Route path='/login' element ={<Login />} />
-          <Route path='/signup' element ={<Signup />} />
+          <Route path='/register' element ={<Signup />} />
           <Route path="/addjob" element ={<AddJob />} />
 
       </Routes>

@@ -50,7 +50,7 @@ const Login = () =>{
           </button>
 
           <div className="auth-footer">
-            Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link>
+            Don't have an account? <Link to="/register" className="auth-link">Sign Up</Link>
           </div>
 
         </form>

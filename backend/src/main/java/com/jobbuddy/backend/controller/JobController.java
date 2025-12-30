@@ -8,6 +8,7 @@ import com.jobbuddy.backend.repository.UserRepository;
 import com.jobbuddy.backend.service.JobParsingService;
 import com.jobbuddy.backend.service.JobService;
 import com.jobbuddy.backend.service.JobParsingService;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class JobController {
     private final JobParsingService parsingService;
     private final UserRepository userRepository;
 
-    public JobController(JobService jobService, JobParsingService parsingService, serRepository userRepository) {
+    public JobController(JobService jobService, JobParsingService parsingService, UserRepository userRepository) {
         this.jobService = jobService;
         this.parsingService = parsingService;
         this.userRepository = userRepository;

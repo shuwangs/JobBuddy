@@ -10,6 +10,16 @@ const AddJob = () => {
     const [parseUrl, setParseUrl] = useState('');
     const [isParsing, setIsParsing] = useState(false);
     const [parsedJob, setParsedJob] = useState(null);
+    
+    const getAuthHeader = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+              navigate('/login');
+              return null;
+          }
+            return { headers: { 'Authorization': `Bearer ${token}` } };
+    }
+
 
     const handleParse = async () =>{
         if (!parseUrl) return;
@@ -17,29 +27,42 @@ const AddJob = () => {
         setIsParsing(true);
         setParsedJob(null);
 
+        const config = getAuthHeader();
+        if (!config) return;
+
         try {
-            const response = await axios.post(`${BASE_URL}/api/jobs/parse`, { url: parseUrl });
-                const data =  response.data;
+            const response = await axios.post(`${BASE_URL}/api/jobs/parse`,
+                { url: parseUrl} ,
+                config
+            );
 
-                if(!data.success) {
-                    alert("Parsing failed: " + data.error);
-                    return;
-                }
+             const data =  response.data;
 
-                let JobData={
-                    company: data.company,
-                    title: data.title,
-                    location: data.location,
-                    salary: data.salaryRange,
-                    url: parseUrl,
-                    date: new Date().toISOString().split('T')[0],
-                    status: "WAITLISTED"
-                }
+            if(!data.success) {
+                alert("Parsing failed: " + data.error);
+                return;
+            }
+
+            let jobData={
+                company: data.company,
+                title: data.title,
+                location: data.location,
+                salary: data.salaryRange,
+                url: parseUrl,
+                date: new Date().toISOString().split('T')[0],
+                status: "WAITLISTED"
+            }
+
             setParsedJob(jobData);
 
-        } catch(error){
-            console.error("Parse error:", error);
-            alert("Failed to connect to parser service.")
+        } catch(e){
+              console.error("Parse error:", e);
+              if(e.response && e.response.status === 403){
+                  alert("Session expired. Please login again.");
+                  navigate('/login');
+              } else {
+                  alert("Failed to connect to parser service.")
+              }
         } finally {
             setIsParsing(false);
         }
@@ -47,6 +70,10 @@ const AddJob = () => {
 
     const handleAddJobToDb = async () => {
         console.log("Saving to DB:", parsedJob);
+
+        const config = getAuthHeader();
+        if (!config) return;
+
         handleParse();
         try {
             const jobToSave = parsedJob ? {
@@ -58,13 +85,23 @@ const AddJob = () => {
                 status: "WAITLISTED"} : null;
 
             if (!jobToSave) return;
-            // TODO: Call API to save
-            await axios.post(`${BASE_URL}/api/jobs`, jobToSave)
+
+            // TODO: Call API to save including the Header
+            await axios.post(`${BASE_URL}/api/jobs`, jobToSave, config);
+
             console.log("saved successfully!");
+            alert("Job Saved Successfully! 🎉");
             clearInputArea();
+            navigate('/dashboard');
         } catch (error) {
             console.error("Failed to save job:", error);
-            alert("Save failed, check console.");
+            if (error.response && error.response.status === 403) {
+                alert("Session expired. Please login again.");
+                navigate('/login');
+            }
+            else {
+                alert("Save failed. Check console for details.");
+            }
         }
   }
 
@@ -81,6 +118,10 @@ const handleChange = (e) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const config = getAuthHeader();
+    if (!config) return;
+
     console.log("Manual Form Data:", formData);
     try {
         const jobToSave =  {
@@ -93,7 +134,8 @@ const handleChange = (e) => {
             status: formData.status ? formData.status.toUpperCase() : "WAITLISTED"} ;
 
            // TODO: Call API to save
-            await axios.post(`${BASE_URL}/api/jobs`, jobToSave)
+            await axios.post(`${BASE_URL}/api/jobs`, jobToSave, config)
+            
             console.log("saved successfully!");
             clearInputArea();
         } catch (error) {

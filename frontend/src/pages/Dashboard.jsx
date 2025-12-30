@@ -1,5 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
 import Stats from '../components/Stats';
@@ -7,21 +8,48 @@ import "./Dashboard.css";
 
 const Dashboard = () => {
     const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    const navigate = useNavigate();
+
     console.log("👉 Current Backend URL:", BASE_URL);
+
     const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
     useEffect(() => {
             fetchJobs();
         }, []);
 
     const fetchJobs = async ()=>{
-        try {
-            const response = await axios.get(`${BASE_URL}/api/jobs`);
-            console.log(`${BASE_URL}/api/jobs`);
-            console.log(response);
-            setJobs(response.data);
-            } catch(error) {
-                console.error(error.message)}
+
+        const token = localStorage.getItem('token');
+        if(!token) {
+          navigate('/login');
+          return;
         }
+
+        try {
+            const response = await axios.get(`${BASE_URL}/api/jobs`, 
+              {
+              headers:{
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            console.log("Jobs fetched:", response.data);
+            setJobs(response.data);
+
+        } catch(e) {
+            console.error("Fetch error:", e);
+            if (e.response && (e.response.status === 403 || e.response.status === 401)){
+                localStorage.removeItem('token');
+                navigate('/login');
+            } else {
+              setError("Failed to load jobs. Is the backend running?");
+            } 
+        }finally {
+            setLoading(false);
+        }
+    }
 
 
     // Daily Cheer logic 
@@ -38,7 +66,11 @@ const Dashboard = () => {
         <div className="quote-area">
           <p className="text-sm text-gray-600 mb-4">{cheer}</p>
         </div>
- 
+
+        {/* Display error info */}
+        {loading && <p>Loading your applications...</p>}
+        {error && <p style={{color: 'red'}}>{error}</p>}
+
         <Stats jobs={jobs} />
         <JobTable jobs={jobs} />
       </div>

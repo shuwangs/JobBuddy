@@ -61,7 +61,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // allow frontend website
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000", "https://job-buddy-job.vercel.app/"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173",
+                "http://localhost:3000",
+                "https://job-buddy-job.vercel.app/",
+                "chrome-extension://*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

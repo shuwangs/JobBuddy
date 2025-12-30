@@ -187,42 +187,52 @@ const extractGlassdoorJobDetails = (url) => {
 
 
 // --------------- Send Data to the backend --------------------
-const saveJobToBackend = async() =>{
-    console.log("JobBuddy is extracting the data...");
-    const payload = getJobDetails();
+// const saveJobToBackend = async() =>{
+//     console.log("JobBuddy is extracting the data...");
+//     const payload = getJobDetails();
 
-    if(!payload) {
-      console.error("Jobbuddy didnot extract the job details successfully");
-      return;
-    }
+//     if(!payload) {
+//       console.error("Jobbuddy didnot extract the job details successfully");
+//       return;
+//     }
 
-    console.log("JobBuddy: Payload ready. Handing off to Background Script...", payload);
+//     console.log("JobBuddy: Payload ready. Handing off to Background Script...", payload);
 
-    chrome.runtime.sendMessage(
-        { 
-          action: "SEND_PAYLOAD_TO_BACKEND", 
-          payload: payload 
-        }, 
-        (response) => {
-          if (chrome.runtime.lastError) {
-            console.error("Connection Error:", chrome.runtime.lastError.message);
-            alert("Extension Error: Please reload the extension.");
-          } else if (response && response.success) {
-            console.log("JobBuddy:  Saved Successfully!");
-            alert("Job saved to JobBuddy!");
-          } else {
-            console.error("JobBuddy: Save Failed:", response?.error);
-            alert("Save failed: " + (response?.error || "Unknown error"));
-          }
-        }
-    );
-}
+//     chrome.runtime.sendMessage(
+//         { 
+//           action: "SEND_PAYLOAD_TO_BACKEND", 
+//           payload: payload 
+//         }, 
+//         (response) => {
+//           if (chrome.runtime.lastError) {
+//             console.error("Connection Error:", chrome.runtime.lastError.message);
+//             alert("Extension Error: Please reload the extension.");
+//           } else if (response && response.success) {
+//             console.log("JobBuddy:  Saved Successfully!");
+//             alert("Job saved to JobBuddy!");
+//           } else {
+//             console.error("JobBuddy: Save Failed:", response?.error);
+//             alert("Save failed: " + (response?.error || "Unknown error"));
+//           }
+//         }
+//     );
+// }
 
 
 // --------------- Add Event Listener ------------------
 console.log("JobBuddy: Content Script Loaded and Ready!");
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "SAVE_JOB") {
+  if (request.action === "GET_JOB_DETAILS") {
+
+    const payload = getJobDetails();
+
+    if (payload) {
+      console.log("JobBuddy: Sending data back to popup:", payload);
+      sendResponse(payload); 
+    } else {
+      console.error("JobBuddy: Failed to extract details.");
+      sendResponse(null); 
+    }
     saveJobToBackend();
     sendResponse({status: "Processing"});
   }

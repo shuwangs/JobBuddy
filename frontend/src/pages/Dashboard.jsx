@@ -1,6 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import {useSearchParams, useNavigate } from 'react-router-dom';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
 import Stats from '../components/Stats';
@@ -9,6 +9,7 @@ import "./Dashboard.css";
 const Dashboard = () => {
     const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     console.log("👉 Current Backend URL:", BASE_URL);
 
@@ -17,8 +18,17 @@ const Dashboard = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-            fetchJobs();
-        }, []);
+      const tokenFromUrl = searchParams.get('token');
+
+        if (tokenFromUrl) {
+          localStorage.setItem('token', tokenFromUrl);
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl)
+        }
+
+        fetchJobs();
+
+        }, [searchParams]);
 
     const fetchJobs = async ()=>{
 

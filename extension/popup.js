@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const jobTitleSpan = document.getElementById('job-title');
     const jobCompanySpan = document.getElementById('job-company');
 
+    // Open dashbaord buttons
+    const goToWebBtn = document.getElementById('go-to-web-btn');
+    const WEB_DASHBOARD_URL = "https://job-buddy-job.vercel.app/dashboard";
+
     let currentJobData = null;
 
     // Check if local has valid token
@@ -81,6 +85,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         jobCompanySpan.textContent = "Click 'Analyze' to start";
         saveBtn.disabled = true;
 
+
         const analyzeBtn = document.getElementById('analyze-btn');
         analyzeBtn.addEventListener('click', () => {
             showStatus("Analyzing page...", "normal");
@@ -113,12 +118,27 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 })
                 saveBtn.disabled = false;
 
-                saveBtn.onclick = () => saveJobToBackend(token);
             }
     
         );
+
+
     }
 
+    // savejobs
+    saveBtn.onclick = () => saveJobToBackend(token);
+
+    goToWebBtn.onclick = () => {
+        chrome.storage.local.get(['token'], (result) => {
+            if(result.token){
+                const authUrl = `${WEB_DASHBOARD_URL}?token=${result.token}`;
+                chrome.tabs.create({ url: authUrl });
+            } else {
+                chrome.tabs.create({ url: "https://job-buddy-job.vercel.app/login" });
+            }
+
+        })
+    }
     
 
 

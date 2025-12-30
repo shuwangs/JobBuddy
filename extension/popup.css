@@ -64,7 +64,7 @@ button {
   margin-bottom: 8px;
 }
 
-/* 主按钮：save and login */
+/* save and login */
 #login-btn, #save-btn {
   background-color: #2563eb;
   color: white;

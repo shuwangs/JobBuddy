@@ -11,7 +11,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    console.log("👉 Current Backend URL:", BASE_URL);
+    console.log("Current Backend URL:", BASE_URL);
 
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);

@@ -117,29 +117,29 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 
                 })
                 saveBtn.disabled = false;
+                // savejobs
+                    saveBtn.onclick = () => saveJobToBackend(token);
 
             }
     
         );
 
+        goToWebBtn.onclick = () => {
+            chrome.storage.local.get(['token'], (result) => {
+                if(result.token && result.token){
+                    const authUrl = `${WEB_DASHBOARD_URL}?token=${result.token}`;
+                    chrome.tabs.create({ url: authUrl });
+                } else {
+                    chrome.tabs.create({ url: "https://job-buddy-job.vercel.app/login" });
+                }
 
-    }
-
-    // savejobs
-    saveBtn.onclick = () => saveJobToBackend(token);
-
-    goToWebBtn.onclick = () => {
-        chrome.storage.local.get(['token'], (result) => {
-            if(result.token){
-                const authUrl = `${WEB_DASHBOARD_URL}?token=${result.token}`;
-                chrome.tabs.create({ url: authUrl });
-            } else {
-                chrome.tabs.create({ url: "https://job-buddy-job.vercel.app/login" });
-            }
-
-        })
-    }
+            })
+        }
     
+    }
+
+ 
+
 
 
     async function saveJobToBackend(token) {

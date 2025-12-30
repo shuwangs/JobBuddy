@@ -75,38 +75,51 @@ document.addEventListener('DOMContentLoaded', ()=>{
     function showMainInterface(token) {
         loginSection.style.display = 'none';
         mainSection.classList.remove('hidden');
-        showStatus("Analyzing page...", "normal");
 
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            if (!tabs[0]) return;
-        
-        
-            chrome.tabs.sendMessage(tabs[0].id, { action: "GET_JOB_DETAILS" }, (response) =>{
-                if (chrome.runtime.lastError || !response) {
-                    console.warn("Parse error:", chrome.runtime.lastError);
 
-                    jobTitleSpan.textContent = tabs[0].title.substring(0, 30) + "...";
-                    jobCompanySpan.textContent = "Current Page";
+        jobTitleSpan.textContent = "Ready to capture";
+        jobCompanySpan.textContent = "Click 'Analyze' to start";
+        saveBtn.disabled = true;
 
-                    currentJobData = {
-                        title: tabs[0].title,
-                        company: "Unknown",
-                        location: "Remote",
-                        url: tabs[0].url,
-                        status: "APPLIED"
-                    };
-                    showStatus("⚠️ Could not parse automatically.", "error");
-                } else {
-                    currentJobData = response;
-                    jobTitleSpan.textContent = response.title;
-                    jobCompanySpan.textContent = response.company;
-                    showStatus("");
-                }
-            })
-        
-        })
-        saveBtn.onclick = () => saveJobToBackend(token);
+        const analyzeBtn = document.getElementById('analyze-btn');
+        analyzeBtn.addEventListener('click', () => {
+            showStatus("Analyzing page...", "normal");
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                    if (!tabs[0]) return;
+                
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "GET_JOB_DETAILS" }, (response) =>{
+                        if (chrome.runtime.lastError || !response) {
+                            console.warn("Parse error:", chrome.runtime.lastError);
+
+                            jobTitleSpan.textContent = tabs[0].title.substring(0, 30) + "...";
+                            jobCompanySpan.textContent = "Current Page";
+
+                            currentJobData = {
+                                title: tabs[0].title,
+                                company: "Unknown",
+                                location: "Remote",
+                                url: tabs[0].url,
+                                status: "APPLIED"
+                            };
+                            showStatus("Could not parse automatically.", "error");
+                        } else {
+                            currentJobData = response;
+                            jobTitleSpan.textContent = response.title;
+                            jobCompanySpan.textContent = response.company;
+                            showStatus("");
+                        }
+                    })
+                
+                })
+                saveBtn.disabled = false;
+
+                saveBtn.onclick = () => saveJobToBackend(token);
+            }
+    
+        );
     }
+
+    
 
 
     async function saveJobToBackend(token) {

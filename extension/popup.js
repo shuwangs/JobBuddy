@@ -76,69 +76,65 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
 
     // Show main interface
+    // extension/popup.js
+
     function showMainInterface(token) {
         loginSection.style.display = 'none';
         mainSection.classList.remove('hidden');
-
 
         jobTitleSpan.textContent = "Ready to capture";
         jobCompanySpan.textContent = "Click 'Analyze' to start";
         saveBtn.disabled = true;
 
-
         const analyzeBtn = document.getElementById('analyze-btn');
-        analyzeBtn.addEventListener('click', () => {
+        
+        analyzeBtn.onclick = () => {
             showStatus("Analyzing page...", "normal");
             chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                    if (!tabs[0]) return;
-                
-                    chrome.tabs.sendMessage(tabs[0].id, { action: "GET_JOB_DETAILS" }, (response) =>{
-                        if (chrome.runtime.lastError || !response) {
-                            console.warn("Parse error:", chrome.runtime.lastError);
+                if (!tabs[0]) return;
+                chrome.tabs.sendMessage(tabs[0].id, { action: "GET_JOB_DETAILS" }, (response) => {
+                    if (chrome.runtime.lastError || !response) {
+                        currentJobData = {
+                            title: tabs[0].title,
+                            company: "Unknown",
+                            url: tabs[0].url,
+                            status: "APPLIED"
+                        };
+                        showStatus("Could not parse automatically.", "error");
+                    } else {
+                        currentJobData = response;
+                        jobTitleSpan.textContent = response.title;
+                        jobCompanySpan.textContent = response.company;
+                        showStatus("Captured!", "success");
+                    }
+                    saveBtn.disabled = false; 
+                });
+            });
+        };
 
-                            jobTitleSpan.textContent = tabs[0].title.substring(0, 30) + "...";
-                            jobCompanySpan.textContent = "Current Page";
 
-                            currentJobData = {
-                                title: tabs[0].title,
-                                company: "Unknown",
-                                location: "Remote",
-                                url: tabs[0].url,
-                                status: "APPLIED"
-                            };
-                            showStatus("Could not parse automatically.", "error");
-                        } else {
-                            currentJobData = response;
-                            jobTitleSpan.textContent = response.title;
-                            jobCompanySpan.textContent = response.company;
-                            showStatus("");
-                        }
-                    })
-                
-                })
-                saveBtn.disabled = false;
-                // savejobs
-                    saveBtn.onclick = () => saveJobToBackend(token);
-
-            }
-    
-        );
+        saveBtn.onclick = () => saveJobToBackend(token);
 
         goToWebBtn.onclick = () => {
             chrome.storage.local.get(['token'], (result) => {
-                if(result.token && result.token){
+
+                const finalToken = result.token || token;
+
+
+                if (result && result.token) {
+                    
                     const authUrl = `${WEB_DASHBOARD_URL}?token=${result.token}`;
+                    console.log("SSO 跳转中:", authUrl);
                     chrome.tabs.create({ url: authUrl });
                 } else {
+                
                     chrome.tabs.create({ url: "https://job-buddy-job.vercel.app/login" });
                 }
-
-            })
-        }
-    
+            });
+        };
     }
 
- 
+    
 
 
 

@@ -14,5 +14,5 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     // flush(): Flushes all pending changes to the database.
     // saveAndFlush(): save an entity and flushes changes
     // deleteAllInBatch(): Deletes multiple entities in a single batch query
-    List<Job> findByUserId(Long userId);
+    List<Job> findByUsername(String username);
 }

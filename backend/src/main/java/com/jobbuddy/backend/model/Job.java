@@ -1,4 +1,5 @@
 package com.jobbuddy.backend.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jobbuddy.backend.model.JobStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,7 @@ public class Job {
     private String jobType;
 
     // add userId information
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

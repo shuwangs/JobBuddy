@@ -1,7 +1,9 @@
 package com.jobbuddy.backend.service;
 import com.jobbuddy.backend.model.Job;
 import com.jobbuddy.backend.model.JobStatus;
+import com.jobbuddy.backend.model.User;
 import com.jobbuddy.backend.repository.JobRepository;
+import com.jobbuddy.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Optional;
 @Service
 public class JobService {
     private JobRepository jobRepo;
+    private UserRepository userRepo;
 
     public JobService(JobRepository jobRepo) {
         this.jobRepo = jobRepo;
@@ -36,6 +39,10 @@ public class JobService {
                 .orElseThrow(() -> new RuntimeException("Job not found"));
         job.setStatus(status);
         return jobRepo.save(job);
+    }
+
+    public List<Job> listJobsByUser(String username) {
+        return jobRepo.findByUsername(username);
     }
 
 }

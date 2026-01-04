@@ -7,7 +7,6 @@ import com.jobbuddy.backend.model.ParseJobResponseDto;
 import com.jobbuddy.backend.repository.UserRepository;
 import com.jobbuddy.backend.service.JobParsingService;
 import com.jobbuddy.backend.service.JobService;
-import com.jobbuddy.backend.service.JobParsingService;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +50,13 @@ public class JobController {
 
     // Get job list
     @GetMapping
-    public ResponseEntity<List<Job>> getAllJobs() {
-        List<Job> jobs = jobService.listAllJobs();
+    public ResponseEntity<List<Job>> getAllJobs(Authentication authentication) {
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        List<Job> jobs = jobService.listJobsByUser(username);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
@@ -65,9 +69,16 @@ public class JobController {
 
     // Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<Job> deleteJob(@PathVariable Long id) {
-        jobService.deleteJobById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Job> deleteJob(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        Job job = jobService.getJobById(id);
+
+        if(job != null && job.getUser() != null && job.getUser().getUsername().equals(username)) {
+            jobService.deleteJobById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);        }
+
     }
 
     @PostMapping("/parse")

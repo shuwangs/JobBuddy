@@ -16,6 +16,7 @@ public class JobService {
 
     public JobService(JobRepository jobRepo) {
         this.jobRepo = jobRepo;
+        this.userRepo = userRepo;
     }
 
     public List<Job> listAllJobs() {

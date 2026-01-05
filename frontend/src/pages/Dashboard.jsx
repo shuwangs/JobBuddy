@@ -72,7 +72,7 @@ const Dashboard = () => {
     const cheer = getDailyCheerMessage();
 
     // Handle the delelte, edit of the job
-    const handleDeleteJob = async((jobId) => {
+    const handleDeleteJob = async(jobId) => {
       if(!window.confirm("Are you sure you want to delete this job?")) return;
       const token = localStorage.getItem("token");
 
@@ -90,7 +90,7 @@ const Dashboard = () => {
           alert("Failed to delete the job. Please try again.");
       }
       
-    });
+    };
 
     const handleEditJob = (job) => {
         console.log("Editing job:", job);

@@ -71,6 +71,32 @@ const Dashboard = () => {
     };
     const cheer = getDailyCheerMessage();
 
+    // Handle the delelte, edit of the job
+    const handleDeleteJob = async((jobId) => {
+      if(!window.confirm("Are you sure you want to delete this job?")) return;
+      const token = localStorage.getItem("token");
+
+      try {
+          await axios.delete(`${BASE_URL}/api/jobs/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+           });
+
+          setJobs(jobs.filter(job => job.id != jobId));
+          alert('Job deleted successfully!');
+      } catch (e) {
+          console.error("Delete error:", e);
+          alert("Failed to delete the job. Please try again.");
+      }
+      
+    });
+
+    const handleEditJob = (job) => {
+        console.log("Editing job:", job);
+        alert(`Edit feature for "${job.title}" is coming soon!`);
+    };
+
     return (
       <div className="dashboard-container">
         <div className="quote-area">
@@ -82,7 +108,10 @@ const Dashboard = () => {
         {error && <p style={{color: 'red'}}>{error}</p>}
 
         <Stats jobs={jobs} />
-        <JobTable jobs={jobs} />
+        <JobTable jobs={jobs}
+            onDelete = {handleDeleteJob}
+            onEdit = {handleEditJob}
+        />
       </div>
     );
 

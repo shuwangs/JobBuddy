@@ -35,10 +35,10 @@ const JobTable = ({ jobs, onEdit, onDelete}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {jobs.map((job) => (
+                    {jobs.map((job, index) => (
                         <tr key={job.id}>
                             {/* 1. ID */}
-                            <td>#{job.id}</td>
+                            <td>#{index + 1}</td>
                             
                             {/* 2. Title  */}
                             <td style={{ fontWeight: 600 }}>{job.title}</td>

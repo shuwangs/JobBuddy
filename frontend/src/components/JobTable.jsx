@@ -1,7 +1,8 @@
 import React from 'react';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import './JobTable.css';
 
-const JobTable = ({ jobs }) => {
+const JobTable = ({ jobs, onEdit, onDelete}) => {
 
     const getStatusClass = (status) => {
         switch (status) {
@@ -11,6 +12,7 @@ const JobTable = ({ jobs }) => {
             default: return "status-applied";
         }
     };
+
 
     return (
         <div className="table-container">
@@ -25,7 +27,7 @@ const JobTable = ({ jobs }) => {
                         <th>URL</th>
                         <th>Location</th>
                         <th>Status</th>
-                        <th>Req Number</th>
+                        {/* <th>Req Number</th> */}
                         <th>Salary</th>
                         <th>Updated At</th>
                         <th>Note</th>
@@ -62,8 +64,8 @@ const JobTable = ({ jobs }) => {
                                 </span>
                             </td>
 
-                            {/* 7. Requisition Number */}
-                            <td>{job.requisitionNumber || "-"}</td>
+                            {/* 7. Requisition Number
+                            <td>{job.requisitionNumber || "-"}</td> */}
 
                             {/* 8. Salary */}
                             <td>{job.salaryRange || "-"}</td>
@@ -76,9 +78,22 @@ const JobTable = ({ jobs }) => {
                                 {job.note || "-"}
                             </td>
 
-                            {/* 11. Action (Edit 按钮) */}
-                            <td>
-                                <button className="btn-edit">Edit</button>
+                            {/* 11. (Edit 按钮) */}
+                            <td className="action-cell">
+                                <button 
+                                    className="icon-btn edit-btn" 
+                                    onClick={() => onEdit(job)}
+                                    title="Edit"
+                                >
+                                    <FiEdit2 />
+                                </button>
+                                <button 
+                                    className="icon-btn delete-btn" 
+                                    onClick={() => onDelete(job.id)}
+                                    title="Delete"
+                                >
+                                    <FiTrash2 />
+                                </button>
                             </td>
                         </tr>
                     ))}

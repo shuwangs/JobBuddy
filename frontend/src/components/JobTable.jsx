@@ -9,6 +9,7 @@ const JobTable = ({ jobs, onEdit, onDelete}) => {
             case "Interview": return "status-interview";
             case "Offer": return "status-offer";
             case "Rejected": return "status-rejected";
+            case "WAITLISTED": return "status-applied";
             default: return "status-applied";
         }
     };
@@ -59,9 +60,16 @@ const JobTable = ({ jobs, onEdit, onDelete}) => {
 
                             {/* 6. Status */}
                             <td>
-                                <span className={`status-badge ${getStatusClass(job.status)}`}>
-                                    {job.status}
-                                </span>
+                                <select  className={`status-badge ${getStatusClass(job.status)}`}
+                                    value = {job.status}
+                                    onChange = {onEdit}>
+                                    <option default value="WAITLISTED">Waitlisted</option>
+                                    <option value="APPLIED">Applied</option>
+                                    <option value="INTERVIEW">Interview</option>
+                                    <option value="OFFER">Offer</option>
+                                    <option value="REJECTED">Rejected</option>
+
+                                </select>
                             </td>
 
                             {/* 7. Requisition Number

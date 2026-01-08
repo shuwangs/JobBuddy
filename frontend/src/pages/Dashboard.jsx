@@ -77,7 +77,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
 
       try {
-          await axios.delete(`${BASE_URL}/api/jobs/${id}`, {
+          await axios.delete(`${BASE_URL}/api/jobs/${jobId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

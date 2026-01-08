@@ -6,7 +6,7 @@ const getJobDetails = () => {
 
   if(url.includes("linkedin.com/jobs/view/") || 
     url.includes("linkedin.com/jobs/collections/") || 
-    url.includes("linkedin.com/jobs/search/")) {
+    url.includes("linkedin.com/jobs/search-results/")) {
     return extractLinkedInJobDetails(url);
   } else if(url.includes("indeed.com/viewjob") || 
     url.includes("indeed.com/job") || 

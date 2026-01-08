@@ -1,7 +1,7 @@
 :root {
-  --primary-color: #2563eb;       /* 鲜亮的宝蓝 */
-  --primary-hover: #1d4ed8;       /* 鼠标悬停时的深蓝 */
-  --accent-color:  #06b6d4;       /* Logo 里的青色，用于装饰 */
+  --primary-color: #2563eb;       
+  --primary-hover: #1d4ed8;       
+  --accent-color:  #06b6d4;      
   --primary-green: #10b981;  
   --green-hover:   #059669;  
 
@@ -14,7 +14,7 @@
   --text-muted:    #64748b;       
   --text-light:    #94a3b8;  
 
-  /* 🟢🔴  (Status) -  Offer, Rejected */
+  /*   (Status) -  Offer, Rejected */
   --status-green:  #10b981;      
   --status-red:    #ef4444;      
   --status-yellow: #f59e0b;      

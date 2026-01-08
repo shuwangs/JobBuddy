@@ -63,7 +63,8 @@
 |Phase.  |	Description         	    | Status  |
 |:-------|:----------------------------|:------:|
 |Phase 1 |	Frontend Initialization	   | 🟢 Done|
-|Phase 2 |	Data Persistence (Postgres)| 🟡 In Progress|
+|Phase 2 |	Data Persistence (Postgres)| 🟢 Done|
 |Phase 3 |	Deployment (Vercel/Render) | 🟢 Done|
 |Phase 4 |  Chrome Extension & SSO	   |🟢 Done|
 |Phase 5 |	User Data Isolation	       | 🔴 Next Step|
+|Phase 6 |	Dashboard manupulation fine tuning       | 🟡 In Progress|

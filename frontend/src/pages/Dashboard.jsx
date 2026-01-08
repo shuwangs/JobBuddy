@@ -73,29 +73,66 @@ const Dashboard = () => {
 
     // Handle the delelte, edit of the job
     const handleDeleteJob = async(jobId) => {
-      if(!window.confirm("Are you sure you want to delete this job?")) return;
-      const token = localStorage.getItem("token");
+        if(!window.confirm("Are you sure you want to delete this job?")) return;
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        try {
+            await axios.delete(`${BASE_URL}/api/jobs/${jobId}`, {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+            });
 
-      try {
-          await axios.delete(`${BASE_URL}/api/jobs/${jobId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-           });
-
-          setJobs(jobs.filter(job => String(job.id)!== String(jobId)));
-          alert('Job deleted successfully!');
-      } catch (e) {
-          console.error("Delete error:", e);
-          alert("Failed to delete the job. Please try again.");
-      }
+            setJobs(jobs.filter(job => String(job.id)!== String(jobId)));
+            alert('Job deleted successfully!');
+        } catch (e) {
+            console.error("Delete error:", e);
+            alert("Failed to delete the job. Please try again.");
+        }
       
     };
 
-    const handleEditJob = (job) => {
-        console.log("Editing job:", job);
-        alert(`Edit feature for "${job.title}" is coming soon!`);
-    };
+    const handleUpdateJob = async (jobId, fieldsToUpdate) => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        try {
+            // call @PutMapping at the backend for partial updates
+            const response = await axios.put(
+                `${BASE_URL}/api/jobs/${jobId}`,{
+                    headers: {
+                      'Authorization': `Bearer ${token}`
+                    }
+                }
+              )
+
+              // Update the UI
+              setJobs(prevJobs => 
+                  prevJobs.map(job => (String(job.id) === String(jobId) ? response.data : job))
+              );
+
+            console.log("Job updated successfully!");
+
+        } catch (e) {
+            console.error("Update error:", e);
+            alert("Failed to update job details.");
+        }
+    }
+
+    const onEditJob = (job) => {
+        const newNote = window.prompt("Edit Note:", job.note || "");
+        const newDate = window.prompt("Edit Date:", job.date || "");
+        const newStatus = window.prompt("Edit Status:", job.status || "Waitlisted");
+
+        if (newNote !== null || newDate !== null) {
+            const fieldsToUpdate = { 
+                ...job, // 
+                note: newNote !== null ? newNote : job.note, 
+                date: newDate !== null ? newDate : job.date,
+                status: newStatus !== null ? newStatus.toUpperCase() : job.status
+            };
+            handleUpdateJob(job.id, fieldsToUpdate);
+        }
+    }
 
     return (
       <div className="dashboard-container">
@@ -110,7 +147,7 @@ const Dashboard = () => {
         <Stats jobs={jobs} />
         <JobTable jobs={jobs}
             onDelete = {handleDeleteJob}
-            onEdit = {handleEditJob}
+            onEdit = {onEditJob}
         />
       </div>
     );

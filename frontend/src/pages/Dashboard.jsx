@@ -83,7 +83,7 @@ const Dashboard = () => {
             }
            });
 
-          setJobs(jobs.filter(job => job.id != jobId));
+          setJobs(jobs.filter(job => String(job.id)!== String(jobId)));
           alert('Job deleted successfully!');
       } catch (e) {
           console.error("Delete error:", e);

@@ -89,7 +89,10 @@ const JobTable = ({ jobs, onEdit, onDelete}) => {
                                 </button>
                                 <button 
                                     className="icon-btn delete-btn" 
-                                    onClick={() => onDelete(job.id)}
+                                    onClick={() =>{
+                                        console.log("Deleting Job ID:", job.id);
+                                        onDelete(job.id)
+                                    }}
                                     title="Delete"
                                 >
                                     <FiTrash2 />

@@ -2,7 +2,7 @@ import React from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import './JobTable.css';
 
-const JobTable = ({ jobs, onEdit, onDelete}) => {
+const JobTable = ({ jobs, onUpdate, onDelete}) => {
 
     const getStatusClass = (status) => {
         switch (status) {
@@ -62,7 +62,7 @@ const JobTable = ({ jobs, onEdit, onDelete}) => {
                             <td>
                                 <select  className={`status-badge ${getStatusClass(job.status)}`}
                                     value = {job.status}
-                                    onChange = {onEdit}>
+                                    onChange = {(event)=> onUpdate(job.id, {status: event.target.value})}>
                                     <option default value="WAITLISTED">Waitlisted</option>
                                     <option value="APPLIED">Applied</option>
                                     <option value="INTERVIEW">Interview</option>
@@ -82,15 +82,26 @@ const JobTable = ({ jobs, onEdit, onDelete}) => {
                             <td className="date-text">{job.date}</td>
 
                             {/* 10. Note */}
-                            <td style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                {job.note || "-"}
+                            <td>
+                                <textarea 
+                                    className='note-edit-area'
+                                    defaultValue={job.note || ""}
+                                    placeholder="Add note..."
+
+                                    onBlur={(event) =>{
+                                        if (event.target.value !== job.notes) {
+                                            onUpdate(job.id,  { notes: event.target.value }); 
+                                        }
+                                    }}
+
+                                />
                             </td>
 
                             {/* 11. (Edit 按钮) */}
                             <td className="action-cell">
                                 <button 
                                     className="icon-btn edit-btn" 
-                                    onClick={() => onEdit(job)}
+                                    onClick={() => onUpdate(job)}
                                     title="Edit"
                                 >
                                     <FiEdit2 />

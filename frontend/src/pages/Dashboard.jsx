@@ -92,47 +92,53 @@ const Dashboard = () => {
       
     };
 
-    const handleUpdateJob = async (jobId, fieldsToUpdate) => {
+    const handleUpdateJob = async (jobId, changes) => {
         const token = localStorage.getItem('token');
         if (!token) return;
+
+        const existingJob = jobs.find(job => String(job.id) === String(jobId));
+        if (!existingJob) {
+          alert("Job not found in UI state.");
+          return;
+        }
+
+          const payload = {
+              ...existingJob,
+              ...changes,
+          };
         try {
             // call @PutMapping at the backend for partial updates
             const response = await axios.put(
-                `${BASE_URL}/api/jobs/${jobId}`,{
+                `${BASE_URL}/api/jobs/${jobId}`, 
+                payload, 
+                {
                     headers: {
                       'Authorization': `Bearer ${token}`
                     }
                 }
-              )
+                
+            );
 
-              // Update the UI
-              setJobs(prevJobs => 
-                  prevJobs.map(job => (String(job.id) === String(jobId) ? response.data : job))
-              );
+            const updated = response.data ?? payload;
 
-            console.log("Job updated successfully!");
+            // Update the UI
+            setJobs(prevJobs => 
+                prevJobs.map(job => (String(job.id) === String(jobId) ? updated : job))
+            );
+
+            console.log("Job updated successfully!", response.data);
 
         } catch (e) {
-            console.error("Update error:", e);
-            alert("Failed to update job details.");
+            console.error("Update error:", {
+            message: e.message,
+            status: e.response?.status,
+            data: e.response?.data,
+          });
+          alert(`Failed to update. Status: ${e.response?.status ?? "unknown"}`);
         }
     }
 
-    const onEditJob = (job) => {
-        const newNote = window.prompt("Edit Note:", job.note || "");
-        const newDate = window.prompt("Edit Date:", job.date || "");
-        const newStatus = window.prompt("Edit Status:", job.status || "Waitlisted");
 
-        if (newNote !== null || newDate !== null) {
-            const fieldsToUpdate = { 
-                ...job, // 
-                note: newNote !== null ? newNote : job.note, 
-                date: newDate !== null ? newDate : job.date,
-                status: newStatus !== null ? newStatus.toUpperCase() : job.status
-            };
-            handleUpdateJob(job.id, fieldsToUpdate);
-        }
-    }
 
     return (
       <div className="dashboard-container">
@@ -147,7 +153,7 @@ const Dashboard = () => {
         <Stats jobs={jobs} />
         <JobTable jobs={jobs}
             onDelete = {handleDeleteJob}
-            onEdit = {onEditJob}
+            onUpdate = {handleUpdateJob}
         />
       </div>
     );

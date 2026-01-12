@@ -2,14 +2,17 @@ import React from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import './JobTable.css';
 
-const JobTable = ({ jobs, onUpdate, onDelete}) => {
+const JobTable = ({ jobs, onStatusChange, onDelete}) => {
 
     const getStatusClass = (status) => {
+
+        
         switch (status) {
-            case "Interview": return "status-interview";
-            case "Offer": return "status-offer";
-            case "Rejected": return "status-rejected";
+            case "INTERVIEWED": return "status-interview";
+            case "OFFERED": return "status-offer";
+            case "REJECTED": return "status-rejected";
             case "WAITLISTED": return "status-applied";
+            case "APPLIED": return "status-applied";
             default: return "status-applied";
         }
     };
@@ -62,11 +65,13 @@ const JobTable = ({ jobs, onUpdate, onDelete}) => {
                             <td>
                                 <select  className={`status-badge ${getStatusClass(job.status)}`}
                                     value = {job.status}
-                                    onChange = {(event)=> onUpdate(job.id, {status: event.target.value})}>
+                                    onChange = {
+                                        (event)=> onStatusChange(
+                                            job.id, event.target.value)}>
                                     <option default value="WAITLISTED">Waitlisted</option>
                                     <option value="APPLIED">Applied</option>
-                                    <option value="INTERVIEW">Interview</option>
-                                    <option value="OFFER">Offer</option>
+                                    <option value="INTERVIEWED">Interview</option>
+                                    <option value="OFFERED">Offer</option>
                                     <option value="REJECTED">Rejected</option>
 
                                 </select>
@@ -90,7 +95,7 @@ const JobTable = ({ jobs, onUpdate, onDelete}) => {
 
                                     onBlur={(event) =>{
                                         if (event.target.value !== job.notes) {
-                                            onUpdate(job.id,  { notes: event.target.value }); 
+                                            onStatusChange(job.id,  { notes: event.target.value }); 
                                         }
                                     }}
 
@@ -101,7 +106,7 @@ const JobTable = ({ jobs, onUpdate, onDelete}) => {
                             <td className="action-cell">
                                 <button 
                                     className="icon-btn edit-btn" 
-                                    onClick={() => onUpdate(job)}
+                                    onClick={() => onStatusChange(job)}
                                     title="Edit"
                                 >
                                     <FiEdit2 />

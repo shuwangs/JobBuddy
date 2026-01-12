@@ -92,7 +92,7 @@ const Dashboard = () => {
       
     };
 
-    const handleUpdateJob = async (jobId, changes) => {
+    const handleStatusChange = async (jobId, status) => {
         const token = localStorage.getItem('token');
         if (!token) return;
 
@@ -102,30 +102,23 @@ const Dashboard = () => {
           return;
         }
 
-          const payload = {
-              ...existingJob,
-              ...changes,
-          };
         try {
-            // call @PutMapping at the backend for partial updates
-            const response = await axios.put(
-                `${BASE_URL}/api/jobs/${jobId}`, 
-                payload, 
+            // call @patchMapping at the backend for partial updates
+            const response = await axios.patch(
+                `${BASE_URL}/api/jobs/${jobId}/status`, 
+                  null,
                 {
-                    headers: {
-                      'Authorization': `Bearer ${token}`
-                    }
+                  params: { status },
+                  headers: { Authorization: `Bearer ${token}` }
                 }
                 
             );
 
-            const updated = response.data ?? payload;
-
-            // Update the UI
-            setJobs(prevJobs => 
-                prevJobs.map(job => (String(job.id) === String(jobId) ? updated : job))
+            const updatedJob = response.data;
+            setJobs(prev =>
+                prev.map(j => (String(j.id) === String(jobId) ? updatedJob : j))
             );
-
+            
             console.log("Job updated successfully!", response.data);
 
         } catch (e) {
@@ -153,7 +146,7 @@ const Dashboard = () => {
         <Stats jobs={jobs} />
         <JobTable jobs={jobs}
             onDelete = {handleDeleteJob}
-            onUpdate = {handleUpdateJob}
+            onStatusChange = {handleStatusChange}
         />
       </div>
     );

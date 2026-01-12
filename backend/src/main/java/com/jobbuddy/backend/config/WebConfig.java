@@ -10,9 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173", "http://localhost:3000", "https://job-buddy-job.vercel.app",
-                        "chrome-extension://*") // Adjust this to your frontend's URL
+                        ) // Adjust this to your frontend's URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("Authorization", "Content-Type", "Accept").exposedHeaders("Authorization")
-                .allowCredentials(true);
+                // .allowCredentials(true)
+                ;
     };
 }

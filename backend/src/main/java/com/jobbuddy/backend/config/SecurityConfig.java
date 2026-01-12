@@ -1,4 +1,5 @@
 package com.jobbuddy.backend.config;
+
 import com.jobbuddy.backend.service.CustomUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -28,28 +29,18 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
-
-
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomUserDetailsService customUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests
-                                .requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
-                .sessionManagement(
-                        session ->session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS)
-                )
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers("/api/auth/**")
+                        .permitAll().anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider(customUserDetailsService))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -61,12 +52,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // allow frontend website
-        configuration.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "https://job-buddy-job.vercel.app/",
-                "chrome-extension://*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:3000",
+                "https://job-buddy-job.vercel.app/", "chrome-extension://*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 
@@ -74,7 +62,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider(CustomUserDetailsService customUserDetailsService) {
@@ -87,10 +74,9 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
-
-

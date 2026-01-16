@@ -52,18 +52,19 @@ public class JobController {
     @GetMapping
     public ResponseEntity<List<Job>> getAllJobs(Authentication authentication) {
         String username = authentication.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Job> jobs = jobService.listJobsByUser(username);
         return new ResponseEntity<>(jobs, HttpStatus.OK);
     }
 
-    // Update job status
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestParam JobStatus status) {
-        Job updatedJob = jobService.updateJob(id, status);
+    // Update job details
+    @PatchMapping("/{id}")
+    public ResponseEntity<Job> updateJobDetails(@PathVariable Long id, @RequestBody Job patch,
+            Authentication authentication) {
+        String username = authentication.getName();
+
+        Job updatedJob = jobService.updateJob(id, username, patch);
         return new ResponseEntity<>(updatedJob, HttpStatus.OK);
     }
 
@@ -73,11 +74,12 @@ public class JobController {
         String username = authentication.getName();
         Job job = jobService.getJobById(id);
 
-        if(job != null && job.getUser() != null && job.getUser().getUsername().equals(username)) {
+        if (job != null && job.getUser() != null && job.getUser().getUsername().equals(username)) {
             jobService.deleteJobById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);        }
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
     }
 

@@ -17,8 +17,9 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const tokenFromUrl = searchParams.get('token');
+
     useEffect(() => {
-      const tokenFromUrl = searchParams.get('token');
 
         if (tokenFromUrl) {
           localStorage.setItem('token', tokenFromUrl);
@@ -28,7 +29,7 @@ const Dashboard = () => {
 
         fetchJobs();
 
-        }, [searchParams]);
+        }, [tokenFromUrl]);
 
     const fetchJobs = async ()=>{
 
@@ -105,10 +106,9 @@ const Dashboard = () => {
         try {
             // call @patchMapping at the backend for partial updates
             const response = await axios.patch(
-                `${BASE_URL}/api/jobs/${jobId}/status`, 
-                  null,
+                `${BASE_URL}/api/jobs/${jobId}`, 
+                   { status },
                 {
-                  params: { status },
                   headers: { Authorization: `Bearer ${token}` }
                 }
                 
@@ -131,6 +131,43 @@ const Dashboard = () => {
         }
     }
 
+    const handleNotesChange = async (jobId, notes) => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const existingJob = jobs.find(job => String(job.id) === String(jobId));
+        if (!existingJob) {
+          alert("Job not found in UI state.");
+          return;
+        }
+
+         try {
+            // call @patchMapping at the backend for partial updates
+            const response = await axios.patch(
+                `${BASE_URL}/api/jobs/${jobId}`, 
+                  { notes: notes },
+                {
+                  headers: { Authorization: `Bearer ${token}` }
+                }
+                
+            );
+
+            const updatedJob = response.data;
+            setJobs(prev =>
+                prev.map(job => (String(job.id) === String(jobId) ? updatedJob : job))
+            );
+            
+            console.log("Job noteupdated successfully!", response.data);
+
+        } catch (e) {
+            console.error("Update error:", {
+            message: e.message,
+            notes: e.response?.notes,
+            data: e.response?.data,
+          });
+          alert(`Failed to update. Status: ${e.response?.status ?? "unknown"}`);
+        }
+    }
 
 
     return (
@@ -147,6 +184,7 @@ const Dashboard = () => {
         <JobTable jobs={jobs}
             onDelete = {handleDeleteJob}
             onStatusChange = {handleStatusChange}
+            onNotesChange = {handleNotesChange}
         />
       </div>
     );

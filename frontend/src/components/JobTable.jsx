@@ -2,7 +2,7 @@ import React from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import './JobTable.css';
 
-const JobTable = ({ jobs, onStatusChange, onDelete}) => {
+const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
 
     const getStatusClass = (status) => {
 
@@ -90,14 +90,10 @@ const JobTable = ({ jobs, onStatusChange, onDelete}) => {
                             <td>
                                 <textarea 
                                     className='note-edit-area'
-                                    defaultValue={job.note || ""}
+                                    defaultValue={job.notes || ""}
                                     placeholder="Add note..."
-
-                                    onBlur={(event) =>{
-                                        if (event.target.value !== job.notes) {
-                                            onStatusChange(job.id,  { notes: event.target.value }); 
-                                        }
-                                    }}
+                        
+                                    onBlur={(event) => onNotesChange(job.id, event.target.value)}
 
                                 />
                             </td>

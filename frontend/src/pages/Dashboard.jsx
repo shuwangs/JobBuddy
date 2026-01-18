@@ -109,7 +109,10 @@ const Dashboard = () => {
                 `${BASE_URL}/api/jobs/${jobId}`, 
                    { status },
                 {
-                  headers: { Authorization: `Bearer ${token}` }
+                  headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json' 
+                  }
                 }
                 
             );
@@ -147,7 +150,8 @@ const Dashboard = () => {
                 `${BASE_URL}/api/jobs/${jobId}`, 
                   { notes: notes },
                 {
-                  headers: { Authorization: `Bearer ${token}` }
+                  headers: { Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'  }
                 }
                 
             );

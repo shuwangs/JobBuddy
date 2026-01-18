@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import dayjs from 'dayjs'
 import './JobTable.css';
 
 const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
@@ -84,7 +85,7 @@ const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
                             <td>{job.salaryRange || "-"}</td>
 
                             {/* 9. Updated At */}
-                            <td className="date-text">{job.date}</td>
+                            <td className="date-text">{dayjs(job.updatedAt).format('YYYY/MM/DD') }</td>
 
                             {/* 10. Note */}
                             <td>
@@ -98,15 +99,8 @@ const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
                                 />
                             </td>
 
-                            {/* 11. (Edit 按钮) */}
+                            {/* 11. Edit */}
                             <td className="action-cell">
-                                <button 
-                                    className="icon-btn edit-btn" 
-                                    onClick={() => onStatusChange(job)}
-                                    title="Edit"
-                                >
-                                    <FiEdit2 />
-                                </button>
                                 <button 
                                     className="icon-btn delete-btn" 
                                     onClick={() =>{

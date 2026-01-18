@@ -14,7 +14,7 @@
 
 - [X] Edit job notes（textarea + save）
 - [X] sorted by function at `table_name`, `updated_at` etc.
-- [ ] Filter display（Applied / Interview）
+- [X] Filter display（Applied / Interview）
 
 ⏱️ 2–3 days (Due: Jan 17th )
 

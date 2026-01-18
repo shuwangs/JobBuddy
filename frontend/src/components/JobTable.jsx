@@ -1,13 +1,35 @@
-import React from 'react';
+import React , { useState, useMemo } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { BsSortDown, BsSortUp, BsArrowDownUp} from 'react-icons/bs';
 import dayjs from 'dayjs'
 import './JobTable.css';
 
 const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
+    const [sortKey, setSortKey] = useState(null);
+    const [sortDiretction, setSortDirection] = useState('asc');
+
+    const getSortIcon = (key) => {
+        if (sortKey != key) return <BsArrowDownUp />;
+        return sortDiretction === "asc" ? <BsSortUp /> : <BsSortDown />
+    }
+
+    const handleSort = (key) => {
+        if (sortKey === key) {
+            setSortDirection( prev => prev === "asc" ? "desc" : "asc");
+        } else {
+            setSortKey(key);
+            setSortDirection('asc');
+        }
+    }
+
+    const sortedJobs = useMemo(() => {
+        const arr = [...jobs];
+        if(!sortKey) return arr;
+
+    })
 
     const getStatusClass = (status) => {
 
-        
         switch (status) {
             case "INTERVIEWED": return "status-interview";
             case "OFFERED": return "status-offer";
@@ -26,15 +48,15 @@ const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
             <table className="job-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Company</th>
-                        <th>URL</th>
-                        <th>Location</th>
-                        <th>Status</th>
+                        <th onClick={() => handleSort('id')} >ID <span className="sort-icon"> {getSortIcon('id')}</span> </th>
+                        <th onClick={() => handleSort('title')} >Title <span className="sort-icon">{getSortIcon('title')}</span> </th>
+                        <th onClick={() => handleSort('company')} >Company <span className="sort-icon">{getSortIcon('company')}</span></th>
+                        <th onClick={() => handleSort('url')} >URL <span className="sort-icon">{getSortIcon('url')} </span></th>
+                        <th onClick={() => handleSort('location')} >Location <span className="sort-icon">{getSortIcon('location')}</span></th>
+                        <th onClick={() => handleSort('status')} >Status <span className="sort-icon">{getSortIcon('status')} </span></th>
                         {/* <th>Req Number</th> */}
                         <th>Salary</th>
-                        <th>Updated At</th>
+                        <th onClick={() => handleSort('update_at')}>Updated At <span className="sort-icon">{getSortIcon('update_at')}</span></th>
                         <th>Note</th>
                         <th>Action</th>
                     </tr>

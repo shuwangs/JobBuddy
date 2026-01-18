@@ -26,7 +26,32 @@ const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
         const arr = [...jobs];
         if(!sortKey) return arr;
 
-    })
+        arr.sort((a, b) =>{
+            let valueA = a[sortKey];
+            let valueB = b[sortKey];
+
+            if (valueA == null) return 1;
+            if (valueB == null) return -1;
+
+            if (sortKey === "updatedAt") {
+                valueA = new Date(valueA).getTime();
+                valueB = new Date(valueB).getTime();
+            }
+
+            if (typeof valueA === 'string') valueA = valueA.toLowerCase();
+            if (typeof valueB === 'string') valueB = valueB.toLowerCase();
+
+            if (valueA < valueB) {
+                return sortDiretction === "asc" ? -1 : 1;
+            }
+            if (valueA > valueB) {
+                return sortDiretction === "asc" ? 1 : -1;
+            }
+            return 0;
+        })
+
+        return arr;
+    },[sortKey, jobs, sortDiretction]);
 
     const getStatusClass = (status) => {
 
@@ -51,18 +76,18 @@ const JobTable = ({ jobs, onStatusChange, onDelete, onNotesChange}) => {
                         <th onClick={() => handleSort('id')} >ID <span className="sort-icon"> {getSortIcon('id')}</span> </th>
                         <th onClick={() => handleSort('title')} >Title <span className="sort-icon">{getSortIcon('title')}</span> </th>
                         <th onClick={() => handleSort('company')} >Company <span className="sort-icon">{getSortIcon('company')}</span></th>
-                        <th onClick={() => handleSort('url')} >URL <span className="sort-icon">{getSortIcon('url')} </span></th>
+                        <th onClick={() => handleSort('url')} >URL</th>
                         <th onClick={() => handleSort('location')} >Location <span className="sort-icon">{getSortIcon('location')}</span></th>
                         <th onClick={() => handleSort('status')} >Status <span className="sort-icon">{getSortIcon('status')} </span></th>
                         {/* <th>Req Number</th> */}
                         <th>Salary</th>
-                        <th onClick={() => handleSort('update_at')}>Updated At <span className="sort-icon">{getSortIcon('update_at')}</span></th>
+                        <th onClick={() => handleSort('updatedAt')}>Updated At <span className="sort-icon">{getSortIcon('updatedAt')}</span></th>
                         <th>Note</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {jobs.map((job, index) => (
+                    {sortedJobs.map((job, index) => (
                         <tr key={job.id}>
                             {/* 1. ID */}
                             <td>#{index + 1}</td>

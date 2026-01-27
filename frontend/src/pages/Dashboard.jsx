@@ -4,6 +4,8 @@ import {useSearchParams, useNavigate } from 'react-router-dom';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
 import Stats from '../components/Stats';
+import  {authHeader} from '../utils/dashboardHooks';
+
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -19,6 +21,7 @@ const Dashboard = () => {
 
     const tokenFromUrl = searchParams.get('token');
 
+    
     useEffect(() => {
 
         if (tokenFromUrl) {
@@ -32,19 +35,10 @@ const Dashboard = () => {
         }, [tokenFromUrl]);
 
     const fetchJobs = async ()=>{
-
-        const token = localStorage.getItem('token');
-        if(!token) {
-          navigate('/login');
-          return;
-        }
-
         try {
             const response = await axios.get(`${BASE_URL}/api/jobs`, 
               {
-              headers:{
-                'Authorization': `Bearer ${token}`
-              }
+              headers:authHeader(),
             });
             console.log("Jobs fetched:", response.data);
             setJobs(response.data);
@@ -75,13 +69,9 @@ const Dashboard = () => {
     // Handle the delelte, edit of the job
     const handleDeleteJob = async(jobId) => {
         if(!window.confirm("Are you sure you want to delete this job?")) return;
-        const token = localStorage.getItem("token");
-        if (!token) return;
         try {
             await axios.delete(`${BASE_URL}/api/jobs/${jobId}`, {
-              headers: {
-                  'Authorization': `Bearer ${token}`
-              }
+              headers: authHeader(),
             });
 
             setJobs(jobs.filter(job => String(job.id)!== String(jobId)));
@@ -107,13 +97,8 @@ const Dashboard = () => {
             // call @patchMapping at the backend for partial updates
             const response = await axios.patch(
                 `${BASE_URL}/api/jobs/${jobId}`, 
-                   { status },
-                {
-                  headers: { 
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json' 
-                  }
-                }
+                  { status },
+                  { headers: { ...authHeader(), "Content-Type": "application/json" } }  
                 
             );
 
@@ -135,9 +120,6 @@ const Dashboard = () => {
     }
 
     const handleNotesChange = async (jobId, notes) => {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
         const existingJob = jobs.find(job => String(job.id) === String(jobId));
         if (!existingJob) {
           alert("Job not found in UI state.");
@@ -149,10 +131,7 @@ const Dashboard = () => {
             const response = await axios.patch(
                 `${BASE_URL}/api/jobs/${jobId}`, 
                   { notes: notes },
-                {
-                  headers: { Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'  }
-                }
+                  { headers: { ...authHeader(), "Content-Type": "application/json" } }  
                 
             );
 

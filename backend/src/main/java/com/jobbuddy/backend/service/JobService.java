@@ -1,4 +1,5 @@
 package com.jobbuddy.backend.service;
+
 import com.jobbuddy.backend.model.Job;
 import com.jobbuddy.backend.model.JobStatus;
 import com.jobbuddy.backend.model.User;
@@ -35,10 +36,15 @@ public class JobService {
         jobRepo.deleteById(id);
     }
 
-    public Job updateJob(Long id, JobStatus status) {
-        Job job = jobRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
-        job.setStatus(status);
+    public Job updateJob(Long id, String username, Job updatedJob) {
+        Job job = jobRepo.findById(id).orElseThrow(() -> new RuntimeException("Job not found"));
+        if (updatedJob.getStatus() != null) {
+            job.setStatus(updatedJob.getStatus());
+        }
+        if (updatedJob.getNotes() != null) {
+            job.setNotes(updatedJob.getNotes());
+        }
+
         return jobRepo.save(job);
     }
 

@@ -4,6 +4,8 @@ import {useSearchParams, useNavigate } from 'react-router-dom';
 import CHEER_MESG from "../utils/cheerMessages";
 import JobTable from '../components/JobTable';
 import Stats from '../components/Stats';
+import  {authHeader} from '../utils/dashboardHooks';
+
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -17,8 +19,10 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const tokenFromUrl = searchParams.get('token');
+
+    
     useEffect(() => {
-      const tokenFromUrl = searchParams.get('token');
 
         if (tokenFromUrl) {
           localStorage.setItem('token', tokenFromUrl);
@@ -28,22 +32,13 @@ const Dashboard = () => {
 
         fetchJobs();
 
-        }, [searchParams]);
+        }, [tokenFromUrl]);
 
     const fetchJobs = async ()=>{
-
-        const token = localStorage.getItem('token');
-        if(!token) {
-          navigate('/login');
-          return;
-        }
-
         try {
             const response = await axios.get(`${BASE_URL}/api/jobs`, 
               {
-              headers:{
-                'Authorization': `Bearer ${token}`
-              }
+              headers:authHeader(),
             });
             console.log("Jobs fetched:", response.data);
             setJobs(response.data);
@@ -74,13 +69,9 @@ const Dashboard = () => {
     // Handle the delelte, edit of the job
     const handleDeleteJob = async(jobId) => {
         if(!window.confirm("Are you sure you want to delete this job?")) return;
-        const token = localStorage.getItem("token");
-        if (!token) return;
         try {
             await axios.delete(`${BASE_URL}/api/jobs/${jobId}`, {
-              headers: {
-                  'Authorization': `Bearer ${token}`
-              }
+              headers: authHeader(),
             });
 
             setJobs(jobs.filter(job => String(job.id)!== String(jobId)));
@@ -105,12 +96,9 @@ const Dashboard = () => {
         try {
             // call @patchMapping at the backend for partial updates
             const response = await axios.patch(
-                `${BASE_URL}/api/jobs/${jobId}/status`, 
-                  null,
-                {
-                  params: { status },
-                  headers: { Authorization: `Bearer ${token}` }
-                }
+                `${BASE_URL}/api/jobs/${jobId}`, 
+                  { status },
+                  { headers: { ...authHeader(), "Content-Type": "application/json" } }  
                 
             );
 
@@ -131,6 +119,38 @@ const Dashboard = () => {
         }
     }
 
+    const handleNotesChange = async (jobId, notes) => {
+        const existingJob = jobs.find(job => String(job.id) === String(jobId));
+        if (!existingJob) {
+          alert("Job not found in UI state.");
+          return;
+        }
+
+         try {
+            // call @patchMapping at the backend for partial updates
+            const response = await axios.patch(
+                `${BASE_URL}/api/jobs/${jobId}`, 
+                  { notes: notes },
+                  { headers: { ...authHeader(), "Content-Type": "application/json" } }  
+                
+            );
+
+            const updatedJob = response.data;
+            setJobs(prev =>
+                prev.map(job => (String(job.id) === String(jobId) ? updatedJob : job))
+            );
+            
+            console.log("Job noteupdated successfully!", response.data);
+
+        } catch (e) {
+            console.error("Update error:", {
+            message: e.message,
+            notes: e.response?.notes,
+            data: e.response?.data,
+          });
+          alert(`Failed to update. Status: ${e.response?.status ?? "unknown"}`);
+        }
+    }
 
 
     return (
@@ -147,6 +167,7 @@ const Dashboard = () => {
         <JobTable jobs={jobs}
             onDelete = {handleDeleteJob}
             onStatusChange = {handleStatusChange}
+            onNotesChange = {handleNotesChange}
         />
       </div>
     );

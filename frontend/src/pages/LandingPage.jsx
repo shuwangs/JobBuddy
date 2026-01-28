@@ -1,8 +1,15 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+      const navigate = useNavigate();
     
+    const handleSignup = () =>{
+        navigate('/register');
+    }
+    const handleLogin = () =>{
+        navigate('/login');
+    }
     return (
         <div>
             <div>
@@ -29,8 +36,10 @@ const LandingPage = () => {
 
             <div>
                 <h3>Ready to get organized?</h3>
-                <button>Get Started</button>
-                <button> Log In</button>
+                <button
+                    onClick={handleSignup}>Get Started</button>
+
+                <button onClick={handleLogin}> Log In</button>
             </div>
             
         </div>

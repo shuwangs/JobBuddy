@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import './LandingPage.css';
 
 const LandingPage = () => {
-      const navigate = useNavigate();
+    const navigate = useNavigate();
     
     const handleSignup = () =>{
         navigate('/register');
@@ -11,35 +12,30 @@ const LandingPage = () => {
         navigate('/login');
     }
     return (
-        <div>
-            <div>
-                <h1>JobBuddy</h1>
-                <h3>Your smart companion for job tracking & applications</h3>
+        <div className="landing-container">
+            <div className="hero">
+                <h1>Track every job. Miss nothing</h1>
+                <p>Your personal job application command center.</p>
+             
+            </div>
 
-                <p>JobBuddy helps you collect, organize, and track job applications 
-                in one place — so you never lose track of opportunities, deadlines, or notes.</p>
+            <div className="audience">
+                <h3> Perfect for:</h3>
+                <ul>
+                    <li>Software engineering job seekers</li>
+                    <li>Career switchers</li>
+                    <li>Anyone applying seriously to 10+ roles</li>
+
+                </ul>
 
             </div>
 
-            <div>
-                <h3>Why JobBuddy?</h3>
-                - Applying for jobs often means juggling:
-
-                - Multiple job boards
-
-                - Countless tabs and spreadsheets
-
-                - Scattered notes and follow-ups
-
-                - JobBuddy brings everything together.
-            </div>
-
-            <div>
+            <div className="cta">
                 <h3>Ready to get organized?</h3>
-                <button
-                    onClick={handleSignup}>Get Started</button>
-
-                <button onClick={handleLogin}> Log In</button>
+                <div className="cta-btns">
+                    <button onClick={handleSignup}>Get Started</button>
+                    <button onClick={handleLogin}> Log In</button>
+                </div>
             </div>
             
         </div>

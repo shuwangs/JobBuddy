@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -49,8 +50,9 @@ public class AuthController {
         }
 
         User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
+        user.setUsername(BCrypt.hashpw(email, BCrypt.gensalt()));
+
+        user.setEmail(username);
         user.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(user);
@@ -88,6 +90,14 @@ public class AuthController {
                     .getPrincipal();
 
             String jwt = jwtUtils.generateToken(userDetails);
+
+            // Check if the user email is encryted and matched
+            String encrypEmail = username;
+            if (BCrypt.checkpw(encrypEmail, userDetails.getUsername())) {
+                System.out.println("It matches");
+            } else {
+                System.out.println("It does not match");
+            }
 
             // send token to the frontend
             Map<String, Object> claims = new HashMap<>();

@@ -1,4 +1,5 @@
 package com.jobbuddy.backend.service;
+
 import com.jobbuddy.backend.model.User;
 import com.jobbuddy.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,7 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -20,13 +20,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.jobbuddy.backend.model.User user = userRepository.findByUsername(username)
-         .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.emptyList()
-        );
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                Collections.emptyList());
     }
 
 }

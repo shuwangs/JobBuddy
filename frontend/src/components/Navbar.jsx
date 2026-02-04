@@ -24,9 +24,9 @@ const Navbar = () => {
                 </div>
 
                 <div className="menu">
-                    <Link to="/addjob" className="btn-add">
+                    {/* <Link to="/addjob" className="btn-add">
                         + Add Job 
-                    </Link>
+                    </Link> */}
 
                     <div className="user-profile">
                         <img 
